@@ -1,0 +1,34 @@
+{
+  "name": "robojs",
+  "version": "0.1.0",
+  "description": "robo hash js web app",
+  "scripts": {
+    "build": "webpack",
+    "start": "ecstatic --port 3009"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/monteslu/robojs.git"
+  },
+  "keywords": [
+    "ble",
+    "webbluetooth",
+    "bluetooth"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/monteslu/robojs/issues"
+  },
+  "homepage": "https://robo.surge.sh",
+  "dependencies": {},
+  "devDependencies": {
+    "blueimp-md5": "^2.7.0",
+    "bufferutil": "^1.2.1",
+    "ecstatic": "^1.4.0",
+    "jquery": "^3.2.1",
+    "json-loader": "^0.5.4",
+    "lodash": "^4.13.1",
+    "utf-8-validate": "^1.2.1",
+    "webpack": "^1.12.11"
+  }
+}
