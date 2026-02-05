@@ -2,9 +2,13 @@
 
 Deterministic robot avatar generator for the browser. Takes any string, MD5 hashes it, and renders a unique robot avatar on canvas.
 
+![monteslu](monteslu.png)
+
 Uses the wonderful robot images from [robohash.org](https://robohash.org).
 
 [![CI](https://github.com/monteslu/robojs/actions/workflows/ci.yml/badge.svg)](https://github.com/monteslu/robojs/actions/workflows/ci.yml)
+
+**Live demo:** [https://robo.surge.sh](https://robo.surge.sh)
 
 ## Installation
 
