@@ -1,34 +1,45 @@
 {
   "name": "robojs",
-  "version": "0.1.0",
-  "description": "robo hash js web app",
+  "version": "1.0.0",
+  "description": "Deterministic robot avatar generator - client-side robohash-style avatars",
+  "type": "module",
+  "main": "src/robojs.js",
+  "exports": {
+    ".": "./src/robojs.js"
+  },
+  "files": [
+    "src/robojs.js",
+    "set1.png"
+  ],
   "scripts": {
-    "build": "webpack",
-    "start": "ecstatic --port 3009"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src/",
+    "start": "npx serve ."
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/monteslu/robojs.git"
   },
   "keywords": [
-    "ble",
-    "webbluetooth",
-    "bluetooth"
+    "avatar",
+    "robot",
+    "hash",
+    "identicon",
+    "robohash",
+    "canvas"
   ],
+  "author": "Luis Montes",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/monteslu/robojs/issues"
   },
-  "homepage": "https://robo.surge.sh",
-  "dependencies": {},
+  "homepage": "https://github.com/monteslu/robojs#readme",
+  "dependencies": {
+    "blueimp-md5": "^2.19.0"
+  },
   "devDependencies": {
-    "blueimp-md5": "^2.7.0",
-    "bufferutil": "^1.2.1",
-    "ecstatic": "^1.4.0",
-    "jquery": "^3.2.1",
-    "json-loader": "^0.5.4",
-    "lodash": "^4.13.1",
-    "utf-8-validate": "^1.2.1",
-    "webpack": "^1.12.11"
+    "eslint": "^9.0.0",
+    "vitest": "^2.0.0"
   }
 }
