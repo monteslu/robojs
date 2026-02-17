@@ -12,6 +12,7 @@
     "set1.png"
   ],
   "scripts": {
+    "build": "node scripts/build-svg.js",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint src/",
