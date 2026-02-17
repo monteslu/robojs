@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <!-- Head 9: Lollipop / balloon shape, big round top tapering to narrow neck -->
+  <g class="head">
+    <path class="outline" d="
+      M 150 30
+      C 225 30, 260 80, 260 140
+      C 260 200, 220 240, 180 245
+      L 180 270
+      L 120 270
+      L 120 245
+      C 80 240, 40 200, 40 140
+      C 40 80, 75 30, 150 30
+      Z
+    "/>
+    <path class="fill" d="
+      M 150 38
+      C 220 38, 252 84, 252 140
+      C 252 194, 214 234, 176 238
+      L 174 262
+      L 126 262
+      L 124 238
+      C 86 234, 48 194, 48 140
+      C 48 84, 80 38, 150 38
+      Z
+    "/>
+    <ellipse class="highlight" cx="118" cy="105" rx="14" ry="32" transform="rotate(-12, 118, 105)"/>
+    <circle class="highlight" cx="106" cy="142" r="5"/>
+  </g>
+</svg>
