@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <g class="mouth">
+    <path class="outline" d="M 110 175 L 195 175 L 195 200 L 110 200 Z"/>
+   <path class="accent" d="M 114 179 L 191 179 L 191 196 L 114 196 Z"/>
+   <line class="outline" x1="130" y1="179" x2="130" y2="196" stroke-width="2"/>
+   <line class="outline" x1="150" y1="179" x2="150" y2="196" stroke-width="2"/>
+   <line class="outline" x1="170" y1="179" x2="170" y2="196" stroke-width="2"/>
+  </g>
+</svg>
