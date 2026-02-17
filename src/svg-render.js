@@ -111,13 +111,12 @@ export function composeSvg(parts, buckets) {
   const accAccent = COLORS[accColor] || COLORS[8];
   const styles = generateStyles(main.h, accent.h);
 
-  // 2D part lookup: parts[type][band][col]
-  // Body/head use bhColor band, eyes/mouth use emColor band, acc uses accColor band
-  const headContent = recolor(extractContent((parts.head[bhColor] || [])[headStyle] || ''), main, accent);
-  const bodyContent = recolor(extractContent((parts.body[bhColor] || [])[bodyStyle] || ''), main, accent);
-  const eyeContent = recolor(extractContent((parts.eyes[emColor] || [])[eyeStyle] || ''), accent, main);
-  const mouthContent = recolor(extractContent((parts.mouth[emColor] || [])[mouthStyle] || ''), accent, main);
-  const accContent = recolor(extractContent((parts.accessory[accColor] || [])[accStyle] || ''), accAccent, main);
+  // Shape selected by style index, color applied by recoloring
+  const headContent = recolor(extractContent(parts.head[headStyle] || ''), main, accent);
+  const bodyContent = recolor(extractContent(parts.body[bodyStyle] || ''), main, accent);
+  const eyeContent = recolor(extractContent(parts.eyes[eyeStyle] || ''), accent, main);
+  const mouthContent = recolor(extractContent(parts.mouth[mouthStyle] || ''), accent, main);
+  const accContent = recolor(extractContent(parts.accessory[accStyle] || ''), accAccent, main);
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
   ${styles}
