@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <g class="accessory">
+    <ellipse class="fill" cx="150" cy="35" rx="35" ry="20" transform="rotate(-15,150,35)"/>
+   <ellipse class="outline" cx="150" cy="35" rx="35" ry="20" transform="rotate(-15,150,35)" fill="none" stroke-width="3"/>
+   <line class="outline" x1="150" y1="50" x2="150" y2="80" stroke-width="3"/>
+  </g>
+</svg>
