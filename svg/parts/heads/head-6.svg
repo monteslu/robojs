@@ -1,20 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
-  <style>
-    .outline { fill: #1a1a1a; stroke: #1a1a1a; stroke-width: 2; }
-    .fill { fill: #ffffff; stroke: none; }
-    .highlight { fill: #4ade80; opacity: 0.5; stroke: none; }
-    .shadow { fill: #d1d5db; opacity: 0.4; stroke: none; }
-    .neck { fill: #9ca3af; stroke: #6b7280; stroke-width: 2; }
-    .rivet { fill: #1a1a1a; stroke: none; }
-    .accent { fill: #ef4444; stroke: none; }
-    .accent-stroke { stroke: #ef4444; fill: none; }
-    .accent2 { fill: #3b82f6; stroke: none; }
-    .accent2-stroke { stroke: #3b82f6; fill: none; }
-    line.outline { fill: none; stroke: #1a1a1a; }
-  </style>
   <!-- Head 6: Squashed sphere / bulbous blob, wider at top tapering slightly, helmet-like with side panels -->
   <g class="head">
-    <path class="outline" d="
+    <path fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" d="
       M 150 35
       C 220 35, 265 90, 260 150
       C 255 210, 215 255, 150 260
@@ -22,7 +9,7 @@
       C 35 90, 80 35, 150 35
       Z
     "/>
-    <path class="fill" d="
+    <path fill="#ffffff" stroke="none" d="
       M 150 44
       C 214 44, 256 95, 252 150
       C 248 205, 210 248, 150 252
@@ -31,7 +18,7 @@
       Z
     "/>
     <!-- Side panels (darker) -->
-    <path class="shadow" d="
+    <path fill="#d1d5db" opacity="0.4" stroke="none" d="
       M 55 130
       C 55 100, 70 70, 90 55
       C 75 80, 60 110, 58 150
@@ -39,7 +26,7 @@
       C 65 220, 50 190, 50 150
       Z
     "/>
-    <path class="shadow" d="
+    <path fill="#d1d5db" opacity="0.4" stroke="none" d="
       M 245 130
       C 245 100, 230 70, 210 55
       C 225 80, 240 110, 242 150
@@ -47,7 +34,7 @@
       C 235 220, 250 190, 250 150
       Z
     "/>
-    <ellipse class="highlight" cx="120" cy="105" rx="15" ry="35" transform="rotate(-12, 120, 105)"/>
-    <circle class="highlight" cx="108" cy="145" r="5"/>
+    <ellipse fill="#4ade80" opacity="0.5" stroke="none" cx="120" cy="105" rx="15" ry="35" transform="rotate(-12, 120, 105)"/>
+    <circle fill="#4ade80" opacity="0.5" stroke="none" cx="108" cy="145" r="5"/>
   </g>
 </svg>
