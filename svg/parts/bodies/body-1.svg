@@ -1,21 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
-  <style>
-    .outline { fill: #1a1a1a; stroke: #1a1a1a; stroke-width: 2; }
-    .fill { fill: #ffffff; stroke: none; }
-    .highlight { fill: #4ade80; opacity: 0.5; stroke: none; }
-    .shadow { fill: #d1d5db; opacity: 0.4; stroke: none; }
-    .neck { fill: #9ca3af; stroke: #6b7280; stroke-width: 2; }
-    .rivet { fill: #1a1a1a; stroke: none; }
-    .accent { fill: #ef4444; stroke: none; }
-    .accent-stroke { stroke: #ef4444; fill: none; }
-    .accent2 { fill: #3b82f6; stroke: none; }
-    .accent2-stroke { stroke: #3b82f6; fill: none; }
-    line.outline { fill: none; stroke: #1a1a1a; }
-  </style>
   <g class="body">
-    <rect class="outline" x="85" y="170" width="130" height="130" rx="15"/>
-   <rect class="fill" x="93" y="178" width="114" height="118" rx="10"/>
-   <rect class="neck" x="125" y="145" width="50" height="30" rx="5"/>
-   <ellipse class="highlight" cx="125" cy="220" rx="10" ry="25"/>
+    <rect fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" x="85" y="170" width="130" height="130" rx="15"/>
+   <rect fill="#ffffff" stroke="none" x="93" y="178" width="114" height="118" rx="10"/>
+   <rect fill="#9ca3af" stroke="#6b7280" stroke-width="2" x="125" y="145" width="50" height="30" rx="5"/>
+   <ellipse fill="#4ade80" opacity="0.5" stroke="none" cx="125" cy="220" rx="10" ry="25"/>
   </g>
 </svg>
