@@ -49,6 +49,30 @@ function generateStyles(mainHue, accentHue) {
 }
 
 /**
+ * Replace placeholder inline colors with hash-derived colors
+ * Templates use fixed colors for standalone viewing; renderer swaps them
+ * @param {string} content - SVG content with placeholder colors
+ * @param {number} mainHue - Main hue
+ * @param {number} accentHue - Accent hue
+ * @returns {string} Recolored SVG content
+ */
+export function recolor(content, mainHue, accentHue) {
+  const outline = `hsl(${mainHue}, 15%, 20%)`;
+  const fill = `hsl(${mainHue}, 70%, 50%)`;
+  const highlight = `hsl(${mainHue}, 60%, 70%)`;
+  const shadow = `hsl(${mainHue}, 70%, 35%)`;
+  const accent = `hsl(${accentHue}, 85%, 60%)`;
+
+  return content
+    .replaceAll('#1a1a1a', outline)
+    .replaceAll('#ffffff', fill)
+    .replaceAll('#4ade80', highlight)
+    .replaceAll('#d1d5db', shadow)
+    .replaceAll('#ef4444', accent)
+    .replaceAll('#3b82f6', accent);
+}
+
+/**
  * Extract inner SVG content from a part template string
  * @param {string} svgString - Full SVG file content
  * @returns {string} Inner group content
@@ -72,11 +96,11 @@ export function composeSvg(parts, buckets) {
   const accentHue = COLOR_HUES[emColor] || 45;
   const styles = generateStyles(mainHue, accentHue);
 
-  const headContent = extractContent(parts.head);
-  const bodyContent = extractContent(parts.body);
-  const eyeContent = extractContent(parts.eyes);
-  const mouthContent = extractContent(parts.mouth);
-  const accContent = extractContent(parts.accessory);
+  const headContent = recolor(extractContent(parts.head), mainHue, accentHue);
+  const bodyContent = recolor(extractContent(parts.body), mainHue, accentHue);
+  const eyeContent = recolor(extractContent(parts.eyes), mainHue, accentHue);
+  const mouthContent = recolor(extractContent(parts.mouth), mainHue, accentHue);
+  const accContent = recolor(extractContent(parts.accessory), mainHue, accentHue);
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
   ${styles}
