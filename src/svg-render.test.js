@@ -1,17 +1,21 @@
 import { describe, it, expect } from 'vitest';
-import { composeSvg, COLOR_HUES, colorScheme, generateStyles, extractContent } from './svg-render.js';
+import { composeSvg, COLORS, colorScheme, generateStyles, extractContent } from './svg-render.js';
 import fs from 'fs';
 import path from 'path';
 
-describe('COLOR_HUES', () => {
-  it('should have 10 color hues', () => {
-    expect(COLOR_HUES).toHaveLength(10);
+describe('COLORS', () => {
+  it('should have 10 color entries', () => {
+    expect(COLORS).toHaveLength(10);
   });
 
-  it('should all be valid hue values (0-360)', () => {
-    COLOR_HUES.forEach(hue => {
-      expect(hue).toBeGreaterThanOrEqual(0);
-      expect(hue).toBeLessThanOrEqual(360);
+  it('should all have valid h, s, l values', () => {
+    COLORS.forEach(c => {
+      expect(c.h).toBeGreaterThanOrEqual(0);
+      expect(c.h).toBeLessThanOrEqual(360);
+      expect(c.s).toBeGreaterThanOrEqual(0);
+      expect(c.s).toBeLessThanOrEqual(100);
+      expect(c.l).toBeGreaterThanOrEqual(0);
+      expect(c.l).toBeLessThanOrEqual(100);
     });
   });
 });
@@ -128,11 +132,11 @@ describe('composeSvg', () => {
   });
 
   it('should include style block with colors', () => {
-    const buckets = [0, 0, 0, 0, 0, 7, 0, 0]; // bhColor=7 → hue 120 (green)
+    const buckets = [0, 0, 0, 0, 0, 7, 0, 0]; // bhColor=7 → Red (hsl 358)
     const parts = loadPartsForBuckets(buckets);
     const svg = composeSvg(parts, buckets);
     expect(svg).toContain('<style>');
-    expect(svg).toContain('hsl(120');
+    expect(svg).toContain('hsl(358');
   });
 
   it('should include all part layers', () => {
@@ -163,11 +167,11 @@ describe('composeSvg', () => {
   });
 
   it('should use different accent color from main color', () => {
-    const buckets = [0, 0, 0, 0, 0, 0, 5, 0]; // bhColor=0 (hue 200), emColor=5 (hue 30)
+    const buckets = [0, 0, 0, 0, 0, 0, 5, 0]; // bhColor=0 (Blue h:198), emColor=5 (Pink h:331)
     const parts = loadPartsForBuckets(buckets);
     const svg = composeSvg(parts, buckets);
-    expect(svg).toContain('hsl(200'); // main
-    expect(svg).toContain('hsl(30');  // accent
+    expect(svg).toContain('hsl(198'); // main
+    expect(svg).toContain('hsl(331'); // accent
   });
 });
 
