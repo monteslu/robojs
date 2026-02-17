@@ -130,9 +130,7 @@ const COLORS = [
 const PART_TYPES = ['heads', 'bodies', 'eyes', 'mouths', 'accessories'];
 const PART_SINGULAR = { heads: 'head', bodies: 'body', eyes: 'eye', mouths: 'mouth', accessories: 'accessory' };
 
-// Load all SVG parts — 2D indexed: parts[type][band][col]
-// Traced: 100 per type (10 bands × 10 cols), named prefix-{band}-{col}.svg
-// Hand-drawn: 10 per type (band 0 only), named prefix-{col}.svg
+// Load all SVG parts — 10 per type, single index
 const parts = {};
 let partsSource = 'traced';
 async function loadParts(source) {
@@ -141,35 +139,19 @@ async function loadParts(source) {
   for (const type of PART_TYPES) {
     parts[type] = [];
     const singular = PART_SINGULAR[type];
-    if (partsSource === 'traced') {
-      // 2D: parts[type][band][col]
-      for (let band = 0; band < 10; band++) {
-        parts[type][band] = [];
-        for (let col = 0; col < 10; col++) {
-          try {
-            const resp = await fetch(`${dir}/${type}/${singular}-${band}-${col}.svg`);
-            if (!resp.ok) throw new Error('not found');
-            parts[type][band].push(await resp.text());
-          } catch(e) {
-            parts[type][band].push('<svg></svg>');
-          }
-        }
-      }
-    } else {
-      // Hand-drawn: 1D, only band 0 shapes
-      parts[type][0] = [];
-      for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 10; i++) {
+      try {
+        const resp = await fetch(`${dir}/${type}/${singular}-${i}.svg`);
+        if (!resp.ok) throw new Error('not found');
+        parts[type].push(await resp.text());
+      } catch(e) {
         try {
-          const resp = await fetch(`${dir}/${type}/${singular}-${i}.svg`);
-          if (!resp.ok) throw new Error('not found');
-          parts[type][0].push(await resp.text());
-        } catch(e) {
-          parts[type][0].push('<svg></svg>');
+          const fallbackDir = dir === 'parts-traced' ? 'parts' : 'parts-traced';
+          const resp2 = await fetch(`${fallbackDir}/${type}/${singular}-${i}.svg`);
+          parts[type].push(await resp2.text());
+        } catch(e2) {
+          parts[type].push('<svg></svg>');
         }
-      }
-      // Fill remaining bands with band 0 (fallback)
-      for (let band = 1; band < 10; band++) {
-        parts[type][band] = parts[type][0];
       }
     }
   }
@@ -237,14 +219,13 @@ function composeSvg(buckets) {
   const emAccent = COLORS[emColor] || COLORS[9];
   const accAccent = COLORS[accColor] || COLORS[8];
 
-  // 2D lookup: parts[type][colorBand][styleIndex]
-  // Body/head use bhColor band, eyes/mouth use emColor band, acc uses accColor band
-  const head = recolor(extractContent((parts.heads[bhColor] || [])[headStyle] || ''), main, emAccent);
-  const body = recolor(extractContent((parts.bodies[bhColor] || [])[bodyStyle] || ''), main, emAccent);
+  // Shape selected by style index, color applied by recoloring
+  const head = recolor(extractContent(parts.heads[headStyle] || ''), main, emAccent);
+  const body = recolor(extractContent(parts.bodies[bodyStyle] || ''), main, emAccent);
   const darkOutline = `hsl(${main.h}, ${Math.max(main.s - 40, 10)}%, ${Math.max(main.l - 30, 8)}%)`;
-  const eyes = addStroke(recolor(extractContent((parts.eyes[emColor] || [])[eyeStyle] || ''), emAccent, main), darkOutline);
-  const mouth = addStroke(recolor(extractContent((parts.mouths[emColor] || [])[mouthStyle] || ''), emAccent, main), darkOutline);
-  const acc = addStroke(recolor(extractContent((parts.accessories[accColor] || [])[accStyle] || ''), accAccent, main), darkOutline);
+  const eyes = addStroke(recolor(extractContent(parts.eyes[eyeStyle] || ''), emAccent, main), darkOutline);
+  const mouth = addStroke(recolor(extractContent(parts.mouths[mouthStyle] || ''), emAccent, main), darkOutline);
+  const acc = addStroke(recolor(extractContent(parts.accessories[accStyle] || ''), accAccent, main), darkOutline);
 
   // Traced SVGs use 600x600 coords, hand-drawn use 300x300
   const vb = partsSource === 'traced' ? '0 0 600 600' : '0 0 300 300';
@@ -306,33 +287,21 @@ function renderColorStrip() {
   ).join('');
 }
 
-// Parts library — show current band (default band 0)
-let libraryBand = 0;
 function renderPartsLibrary() {
   const container = document.getElementById('partsLibrary');
   container.innerHTML = '';
   const pvb = partsSource === 'traced' ? '0 0 600 600' : '0 0 300 300';
   
-  // Band selector
-  let bandHtml = '<div style="margin-bottom:12px"><label style="color:#9ca3af;font-size:13px">Color band: </label>';
-  for (let b = 0; b < 10; b++) {
-    const c = COLORS[b];
-    const sel = b === libraryBand ? 'border:2px solid white' : 'border:2px solid transparent';
-    bandHtml += `<span class="color-swatch" style="display:inline-block;width:24px;height:24px;background:hsl(${c.h},${c.s}%,${c.l}%);${sel};vertical-align:middle;cursor:pointer" onclick="window.setLibraryBand(${b})"></span> `;
-  }
-  bandHtml += '</div>';
-  container.innerHTML += bandHtml;
-  
   for (const type of PART_TYPES) {
     const singular = PART_SINGULAR[type];
-    let html = `<h4 style="color:#9ca3af;text-transform:capitalize">${type} (band ${libraryBand})</h4><div class="parts-grid">`;
+    let html = `<h4 style="color:#9ca3af;text-transform:capitalize">${type}</h4><div class="parts-grid">`;
     for (let i = 0; i < 10; i++) {
-      const content = extractContent((parts[type][libraryBand] || [])[i] || '');
+      const content = extractContent(parts[type][i] || '');
       html += `<div class="part-cell">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="${pvb}">
           ${content}
         </svg>
-        <div class="idx">${singular}-${libraryBand}-${i}</div>
+        <div class="idx">${singular}-${i}</div>
         <div class="tooltip">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="${pvb}">
             ${content}
@@ -344,7 +313,6 @@ function renderPartsLibrary() {
     container.innerHTML += html;
   }
 }
-window.setLibraryBand = function(b) { libraryBand = b; renderPartsLibrary(); };
 
 // Init
 await loadParts();
