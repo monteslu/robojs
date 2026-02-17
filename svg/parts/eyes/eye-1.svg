@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <g class="eye">
+    <ellipse class="accent" cx="115" cy="135" rx="24" ry="18"/>
+   <circle class="outline" cx="118" cy="135" r="8"/>
+   <ellipse class="accent" cx="185" cy="135" rx="20" ry="15"/>
+   <circle class="outline" cx="187" cy="135" r="6"/>
+  </g>
+</svg>
