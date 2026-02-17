@@ -181,7 +181,15 @@ function extractContent(svgString) {
   const gMatch = svgString.match(/<g[^>]*>([\s\S]*?)<\/g>/);
   if (gMatch) return gMatch[1];
   // Traced SVGs: strip <svg...> and </svg>, return inner paths
-  return svgString.replace(/<svg[^>]*>/, '').replace(/<\/svg>/, '');
+  const vbMatch = svgString.match(/viewBox="0 0 (\d+) (\d+)"/);
+  const vbSize = vbMatch ? parseInt(vbMatch[1]) : 600;
+  let content = svgString.replace(/<svg[^>]*>/, '').replace(/<\/svg>/, '');
+  // Normalize to 600x600 coordinate space (heads/bodies are 600, detail parts may be 900)
+  if (vbSize !== 600) {
+    const scale = 600 / vbSize;
+    content = `<g transform="scale(${scale})">${content}</g>`;
+  }
+  return content;
 }
 
 // Replace placeholder colors in SVG content with hash-derived colors
