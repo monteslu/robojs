@@ -1,5 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
-  <g class="mouth">
-    <path fill="none" stroke="#1a1a1a" d="M 110 188 L 125 178 L 140 192 L 155 178 L 170 192 L 185 178 L 200 188"  stroke-width="3"/>
-  </g>
-</svg>
+<svg width="300" height="300" viewBox="0 0 600 600" version="1.1" xmlns="http://www.w3.org/2000/svg" desc="Created with imagetracer.js version 1.2.6" ><path fill="#3b82f6" stroke="#3b82f6" stroke-width="1" opacity="1" d="M 240 348 L 330 348 L 330 355.5 L 332 356.5 L 332 399.5 Q 334.8 398.9 334 402 Q 330.9 401.3 331.5 404 L 322 404 L 321.5 406 L 292.5 406 L 291.5 408 L 220 408 L 220 402.5 L 218 402 L 218 396 L 210 396 L 210 384 L 212 384 L 212 376.5 L 214 376 L 214 370 L 216 369.5 L 216 362 L 214 361.5 L 214 350 L 239.5 350 L 240 348 Z " /></svg>
