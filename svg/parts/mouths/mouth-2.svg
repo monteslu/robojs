@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <g class="mouth">
+    <circle class="outline" cx="150" cy="190" r="12"/>
+   <circle class="accent" cx="150" cy="190" r="8"/>
+  </g>
+</svg>
