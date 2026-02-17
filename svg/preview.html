@@ -97,6 +97,7 @@
     <input type="text" id="hashInput" placeholder="email, username, whatever..." value="monteslu">
   </div>
   <button onclick="renderRandom()">🎲 Random</button>
+  <button id="toggleSource" onclick="togglePartsSource()">📐 Switch to Hand-drawn</button>
 </div>
 
 <div class="robot-display" id="mainDisplay"></div>
@@ -129,19 +130,30 @@ const COLORS = [
 const PART_TYPES = ['heads', 'bodies', 'eyes', 'mouths', 'accessories'];
 const PART_SINGULAR = { heads: 'head', bodies: 'body', eyes: 'eye', mouths: 'mouth', accessories: 'accessory' };
 
-// Load all SVG parts
+// Load all SVG parts — try traced first, fall back to hand-drawn
 const parts = {};
-async function loadParts() {
+let partsSource = 'traced';
+async function loadParts(source) {
+  partsSource = source || 'traced';
+  const dir = partsSource === 'traced' ? 'parts-traced' : 'parts';
   for (const type of PART_TYPES) {
     parts[type] = [];
     const singular = PART_SINGULAR[type];
     for (let i = 0; i < 10; i++) {
       try {
-        const resp = await fetch(`parts/${type}/${singular}-${i}.svg`);
+        const resp = await fetch(`${dir}/${type}/${singular}-${i}.svg`);
+        if (!resp.ok) throw new Error('not found');
         const text = await resp.text();
         parts[type].push(text);
       } catch(e) {
-        parts[type].push('<svg></svg>');
+        // Fall back to other source
+        try {
+          const fallbackDir = dir === 'parts-traced' ? 'parts' : 'parts-traced';
+          const resp2 = await fetch(`${fallbackDir}/${type}/${singular}-${i}.svg`);
+          parts[type].push(await resp2.text());
+        } catch(e2) {
+          parts[type].push('<svg></svg>');
+        }
       }
     }
   }
@@ -167,8 +179,11 @@ function getBuckets(hash) {
 }
 
 function extractContent(svgString) {
-  const match = svgString.match(/<g[^>]*>([\s\S]*?)<\/g>/);
-  return match ? match[1] : '';
+  // Try <g> wrapper first (hand-drawn), then strip <svg> tags (traced)
+  const gMatch = svgString.match(/<g[^>]*>([\s\S]*?)<\/g>/);
+  if (gMatch) return gMatch[1];
+  // Traced SVGs: strip <svg...> and </svg>, return inner paths
+  return svgString.replace(/<svg[^>]*>/, '').replace(/<\/svg>/, '');
 }
 
 // Replace placeholder colors in SVG content with hash-derived colors
@@ -179,13 +194,18 @@ function recolor(content, main, accent) {
   const shadow = `hsl(${main.h}, ${main.s}%, ${Math.max(main.l - 15, 20)}%)`;
   const accentFill = `hsl(${accent.h}, ${accent.s}%, ${accent.l}%)`;
 
+  // Traced SVGs use 5 placeholders mapped by luminance percentile
+  // Hand-drawn use the original 6 placeholders
+  const darkAccent = `hsl(${main.h}, ${main.s}%, ${Math.max(main.l - 15, 20)}%)`;
+  const midFill = `hsl(${main.h}, ${main.s}%, ${main.l}%)`;
+  
   return content
     .replaceAll('#1a1a1a', outline)
+    .replaceAll('#ef4444', darkAccent)
+    .replaceAll('#3b82f6', midFill)
     .replaceAll('#ffffff', fill)
     .replaceAll('#4ade80', highlight)
-    .replaceAll('#d1d5db', shadow)
-    .replaceAll('#ef4444', accentFill)
-    .replaceAll('#3b82f6', accentFill);
+    .replaceAll('#d1d5db', shadow);
 }
 
 function composeSvg(buckets) {
@@ -200,13 +220,18 @@ function composeSvg(buckets) {
   const mouth = recolor(extractContent(parts.mouths[mouthStyle] || ''), main, accent);
   const acc = recolor(extractContent(parts.accessories[accStyle] || ''), main, accent);
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  // Traced SVGs use 600x600 coords, hand-drawn use 300x300
+  const vb = partsSource === 'traced' ? '0 0 600 600' : '0 0 300 300';
+  const bodyT = partsSource === 'traced' ? '' : 'translate(15, 80) scale(0.9)';
+  const partT = partsSource === 'traced' ? '' : 'translate(22, -10) scale(0.85)';
+  
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}">
     <g class="robot">
-      <g transform="translate(15, 80) scale(0.9)">${body}</g>
-      <g transform="translate(22, -10) scale(0.85)">${head}</g>
-      <g transform="translate(22, -10) scale(0.85)">${mouth}</g>
-      <g transform="translate(22, -10) scale(0.85)">${eyes}</g>
-      <g transform="translate(22, -10) scale(0.85)">${acc}</g>
+      <g ${bodyT ? `transform="${bodyT}"` : ''}>${body}</g>
+      <g ${partT ? `transform="${partT}"` : ''}>${head}</g>
+      <g ${partT ? `transform="${partT}"` : ''}>${mouth}</g>
+      <g ${partT ? `transform="${partT}"` : ''}>${eyes}</g>
+      <g ${partT ? `transform="${partT}"` : ''}>${acc}</g>
     </g>
   </svg>`;
 }
@@ -266,13 +291,14 @@ function renderPartsLibrary() {
     let html = `<h4 style="color:#9ca3af;text-transform:capitalize">${type}</h4><div class="parts-grid">`;
     for (let i = 0; i < 10; i++) {
       const content = extractContent(parts[type][i] || '');
+      const pvb = partsSource === 'traced' ? '0 0 600 600' : '0 0 300 300';
       html += `<div class="part-cell">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="${pvb}">
           ${content}
         </svg>
         <div class="idx">${singular}-${i}</div>
         <div class="tooltip">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="${pvb}">
             ${content}
           </svg>
         </div>
@@ -289,6 +315,18 @@ window.renderFromInput();
 renderGallery();
 renderColorStrip();
 renderPartsLibrary();
+
+// Toggle between traced and hand-drawn parts
+window.togglePartsSource = async function() {
+  const newSource = partsSource === 'traced' ? 'hand-drawn' : 'traced';
+  await loadParts(newSource);
+  document.getElementById('toggleSource').textContent = 
+    partsSource === 'traced' ? '📐 Switch to Hand-drawn' : '🔍 Switch to Traced';
+  document.getElementById('partsLibrary').innerHTML = '';
+  window.renderFromInput();
+  renderGallery();
+  renderPartsLibrary();
+};
 
 // Live render on typing
 document.getElementById('hashInput').addEventListener('input', () => window.renderFromInput());
