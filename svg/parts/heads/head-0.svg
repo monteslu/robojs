@@ -1,20 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
-  <style>
-    .outline { fill: #1a1a1a; stroke: #1a1a1a; stroke-width: 2; }
-    .fill { fill: #ffffff; stroke: none; }
-    .highlight { fill: #4ade80; opacity: 0.5; stroke: none; }
-    .shadow { fill: #d1d5db; opacity: 0.4; stroke: none; }
-    .neck { fill: #9ca3af; stroke: #6b7280; stroke-width: 2; }
-    .rivet { fill: #1a1a1a; stroke: none; }
-    .accent { fill: #ef4444; stroke: none; }
-    .accent-stroke { stroke: #ef4444; fill: none; }
-    .accent2 { fill: #3b82f6; stroke: none; }
-    .accent2-stroke { stroke: #3b82f6; fill: none; }
-    line.outline { fill: none; stroke: #1a1a1a; }
-  </style>
   <!-- Head 0: Shield/guitar-pick - wide dome top, pointed chin bottom -->
   <g class="head">
-    <path class="outline" d="
+    <path fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" d="
       M 150 30
       C 210 30, 260 60, 265 120
       C 270 170, 245 220, 200 250
@@ -24,7 +11,7 @@
       C 40 60, 90 30, 150 30
       Z
     "/>
-    <path class="fill" d="
+    <path fill="#ffffff" stroke="none" d="
       M 150 38
       C 206 38, 252 66, 257 122
       C 262 168, 238 216, 196 244
@@ -34,14 +21,14 @@
       C 48 66, 94 38, 150 38
       Z
     "/>
-    <ellipse class="highlight" cx="115" cy="100" rx="15" ry="35" transform="rotate(-15, 115, 100)"/>
-    <circle class="highlight" cx="103" cy="142" r="5"/>
-    <circle class="rivet" cx="82" cy="58" r="3"/>
-    <circle class="rivet" cx="104" cy="44" r="3"/>
-    <circle class="rivet" cx="128" cy="36" r="3"/>
-    <circle class="rivet" cx="150" cy="34" r="3"/>
-    <circle class="rivet" cx="172" cy="36" r="3"/>
-    <circle class="rivet" cx="196" cy="44" r="3"/>
-    <circle class="rivet" cx="218" cy="58" r="3"/>
+    <ellipse fill="#4ade80" opacity="0.5" stroke="none" cx="115" cy="100" rx="15" ry="35" transform="rotate(-15, 115, 100)"/>
+    <circle fill="#4ade80" opacity="0.5" stroke="none" cx="103" cy="142" r="5"/>
+    <circle fill="#1a1a1a" stroke="none" cx="82" cy="58" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="104" cy="44" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="128" cy="36" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="150" cy="34" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="172" cy="36" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="196" cy="44" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="218" cy="58" r="3"/>
   </g>
 </svg>
