@@ -6,10 +6,21 @@
  */
 
 /**
- * Color palette mapping bucket index (0-9) to hue degrees
- * Matches the sprite sheet color groups
+ * Color palette sampled from sprite sheet color groups
+ * Each entry has { h, s, l } matching the actual set1.png colors
  */
-const COLOR_HUES = [200, 180, 270, 0, 190, 30, 45, 120, 220, 25];
+const COLORS = [
+  { h: 198, s: 75, l: 51 },  // 0: Blue
+  { h: 26,  s: 40, l: 39 },  // 1: Brown
+  { h: 129, s: 53, l: 46 },  // 2: Green
+  { h: 216, s: 3,  l: 66 },  // 3: Gray
+  { h: 32,  s: 92, l: 54 },  // 4: Orange
+  { h: 331, s: 100,l: 64 },  // 5: Pink
+  { h: 301, s: 57, l: 36 },  // 6: Purple
+  { h: 358, s: 85, l: 52 },  // 7: Red
+  { h: 240, s: 4,  l: 95 },  // 8: Near-white
+  { h: 56,  s: 94, l: 58 },  // 9: Yellow
+];
 
 /**
  * Derive a full color scheme from a hue value
@@ -56,20 +67,23 @@ function generateStyles(mainHue, accentHue) {
  * @param {number} accentHue - Accent hue
  * @returns {string} Recolored SVG content
  */
-export function recolor(content, mainHue, accentHue) {
-  const outline = `hsl(${mainHue}, 15%, 20%)`;
-  const fill = `hsl(${mainHue}, 70%, 50%)`;
-  const highlight = `hsl(${mainHue}, 60%, 70%)`;
-  const shadow = `hsl(${mainHue}, 70%, 35%)`;
-  const accent = `hsl(${accentHue}, 85%, 60%)`;
+export function recolor(content, main, accent) {
+  const m = typeof main === 'number' ? (COLORS[main] || COLORS[0]) : main;
+  const a = typeof accent === 'number' ? (COLORS[accent] || COLORS[9]) : accent;
+
+  const outline = `hsl(${m.h}, ${Math.max(m.s - 40, 10)}%, ${Math.max(m.l - 30, 12)}%)`;
+  const fill = `hsl(${m.h}, ${m.s}%, ${m.l}%)`;
+  const highlight = `hsl(${m.h}, ${Math.max(m.s - 15, 10)}%, ${Math.min(m.l + 20, 85)}%)`;
+  const shadow = `hsl(${m.h}, ${m.s}%, ${Math.max(m.l - 15, 20)}%)`;
+  const accentFill = `hsl(${a.h}, ${a.s}%, ${a.l}%)`;
 
   return content
     .replaceAll('#1a1a1a', outline)
     .replaceAll('#ffffff', fill)
     .replaceAll('#4ade80', highlight)
     .replaceAll('#d1d5db', shadow)
-    .replaceAll('#ef4444', accent)
-    .replaceAll('#3b82f6', accent);
+    .replaceAll('#ef4444', accentFill)
+    .replaceAll('#3b82f6', accentFill);
 }
 
 /**
@@ -92,15 +106,15 @@ function extractContent(svgString) {
 export function composeSvg(parts, buckets) {
   const [,,,, , bhColor, emColor] = buckets;
 
-  const mainHue = COLOR_HUES[bhColor] || 120;
-  const accentHue = COLOR_HUES[emColor] || 45;
-  const styles = generateStyles(mainHue, accentHue);
+  const main = COLORS[bhColor] || COLORS[0];
+  const accent = COLORS[emColor] || COLORS[9];
+  const styles = generateStyles(main.h, accent.h);
 
-  const headContent = recolor(extractContent(parts.head), mainHue, accentHue);
-  const bodyContent = recolor(extractContent(parts.body), mainHue, accentHue);
-  const eyeContent = recolor(extractContent(parts.eyes), mainHue, accentHue);
-  const mouthContent = recolor(extractContent(parts.mouth), mainHue, accentHue);
-  const accContent = recolor(extractContent(parts.accessory), mainHue, accentHue);
+  const headContent = recolor(extractContent(parts.head), main, accent);
+  const bodyContent = recolor(extractContent(parts.body), main, accent);
+  const eyeContent = recolor(extractContent(parts.eyes), main, accent);
+  const mouthContent = recolor(extractContent(parts.mouth), main, accent);
+  const accContent = recolor(extractContent(parts.accessory), main, accent);
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
   ${styles}
@@ -117,4 +131,4 @@ export function composeSvg(parts, buckets) {
 /**
  * Color hues exported for external use
  */
-export { COLOR_HUES, colorScheme, generateStyles, extractContent };
+export { COLORS, colorScheme, generateStyles, extractContent };
