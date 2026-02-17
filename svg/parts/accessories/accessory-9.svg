@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
   <g class="accessory">
     <path fill="#ef4444" stroke="none" d="M 120 80 C 120 50, 130 25, 150 15 C 170 25, 180 50, 180 80 Z"/>
-   <path fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" d="M 120 80 C 120 50, 130 25, 150 15 C 170 25, 180 50, 180 80" fill="none" stroke-width="3"/>
+   <path fill="none" stroke="#1a1a1a" d="M 120 80 C 120 50, 130 25, 150 15 C 170 25, 180 50, 180 80"  stroke-width="3"/>
   </g>
 </svg>
