@@ -242,7 +242,7 @@ function renderPartsLibrary() {
     const singular = PART_SINGULAR[type];
     let html = `<h4 style="color:#9ca3af;text-transform:capitalize">${type}</h4><div class="parts-grid">`;
     for (let i = 0; i < 10; i++) {
-      const content = recolor(extractContent(parts[type][i] || ''), mainHue, accentHue);
+      const content = extractContent(parts[type][i] || '');
       html += `<div class="part-cell">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
           ${content}
