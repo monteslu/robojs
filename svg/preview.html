@@ -212,13 +212,17 @@ function composeSvg(buckets) {
   const [bodyStyle, headStyle, eyeStyle, mouthStyle, accStyle, bhColor, emColor, accColor] = buckets;
   
   const main = COLORS[bhColor] || COLORS[0];
-  const accent = COLORS[emColor] || COLORS[9];
+  const emAccent = COLORS[emColor] || COLORS[9];
+  const accAccent = COLORS[accColor] || COLORS[8];
 
-  const head = recolor(extractContent(parts.heads[headStyle] || ''), main, accent);
-  const body = recolor(extractContent(parts.bodies[bodyStyle] || ''), main, accent);
-  const eyes = recolor(extractContent(parts.eyes[eyeStyle] || ''), main, accent);
-  const mouth = recolor(extractContent(parts.mouths[mouthStyle] || ''), main, accent);
-  const acc = recolor(extractContent(parts.accessories[accStyle] || ''), main, accent);
+  // Body and head use main color
+  const head = recolor(extractContent(parts.heads[headStyle] || ''), main, emAccent);
+  const body = recolor(extractContent(parts.bodies[bodyStyle] || ''), main, emAccent);
+  // Eyes and mouth use emColor as PRIMARY so they stand out against head
+  const eyes = recolor(extractContent(parts.eyes[eyeStyle] || ''), emAccent, main);
+  const mouth = recolor(extractContent(parts.mouths[mouthStyle] || ''), emAccent, main);
+  // Accessories use accColor as primary
+  const acc = recolor(extractContent(parts.accessories[accStyle] || ''), accAccent, main);
 
   // Traced SVGs use 600x600 coords, hand-drawn use 300x300
   const vb = partsSource === 'traced' ? '0 0 600 600' : '0 0 300 300';
