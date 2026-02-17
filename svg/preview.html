@@ -220,7 +220,9 @@ function addStroke(content, strokeColor) {
     .replace(/stroke-width="[^"]*"/g, 'stroke-width="3"');
 }
 
+let svgCounter = 0;
 function composeSvg(buckets) {
+  const uid = svgCounter++;
   const [bodyStyle, headStyle, eyeStyle, mouthStyle, accStyle, bhColor, emColor, accColor] = buckets;
   
   const main = COLORS[bhColor] || COLORS[0];
@@ -248,16 +250,16 @@ function composeSvg(buckets) {
   
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}">
     <defs>
-      <filter id="bhHue"><feColorMatrix type="hueRotate" values="${bhRotate}"/></filter>
-      <filter id="emHue"><feColorMatrix type="hueRotate" values="${emRotate}"/></filter>
-      <filter id="accHue"><feColorMatrix type="hueRotate" values="${accRotate}"/></filter>
+      <filter id="bh${uid}"><feColorMatrix type="hueRotate" values="${bhRotate}"/></filter>
+      <filter id="em${uid}"><feColorMatrix type="hueRotate" values="${emRotate}"/></filter>
+      <filter id="ac${uid}"><feColorMatrix type="hueRotate" values="${accRotate}"/></filter>
     </defs>
     <g class="robot">
-      <g ${bodyT ? `transform="${bodyT}"` : ''} filter="url(#bhHue)">${body}</g>
-      <g ${partT ? `transform="${partT}"` : ''} filter="url(#bhHue)">${head}</g>
-      <g ${partT ? `transform="${partT}"` : ''} filter="url(#emHue)">${mouth}</g>
-      <g ${partT ? `transform="${partT}"` : ''} filter="url(#emHue)">${eyes}</g>
-      <g ${partT ? `transform="${partT}"` : ''} filter="url(#accHue)">${acc}</g>
+      <g ${bodyT ? `transform="${bodyT}"` : ''} filter="url(#bh${uid})">${body}</g>
+      <g ${partT ? `transform="${partT}"` : ''} filter="url(#bh${uid})">${head}</g>
+      <g ${partT ? `transform="${partT}"` : ''} filter="url(#em${uid})">${mouth}</g>
+      <g ${partT ? `transform="${partT}"` : ''} filter="url(#em${uid})">${eyes}</g>
+      <g ${partT ? `transform="${partT}"` : ''} filter="url(#ac${uid})">${acc}</g>
     </g>
   </svg>`;
 }
