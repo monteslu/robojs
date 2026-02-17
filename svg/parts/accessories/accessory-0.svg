@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <g class="accessory">
+    <rect class="outline" x="140" y="30" width="20" height="50" rx="3"/>
+   <rect class="fill" x="144" y="34" width="12" height="42" rx="2"/>
+   <rect class="accent" x="135" y="18" width="30" height="16" rx="4"/>
+  </g>
+</svg>
