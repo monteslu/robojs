@@ -181,15 +181,7 @@ function extractContent(svgString) {
   const gMatch = svgString.match(/<g[^>]*>([\s\S]*?)<\/g>/);
   if (gMatch) return gMatch[1];
   // Traced SVGs: strip <svg...> and </svg>, return inner paths
-  // Detect viewBox to know coordinate space
-  const vbMatch = svgString.match(/viewBox="0 0 (\d+) (\d+)"/);
-  const vbSize = vbMatch ? parseInt(vbMatch[1]) : 600;
-  let content = svgString.replace(/<svg[^>]*>/, '').replace(/<\/svg>/, '');
-  // If 4x traced (1200x1200), wrap in a scale group to normalize to 600x600
-  if (vbSize === 1200) {
-    content = `<g transform="scale(0.5)">${content}</g>`;
-  }
-  return content;
+  return svgString.replace(/<svg[^>]*>/, '').replace(/<\/svg>/, '');
 }
 
 // Replace placeholder colors in SVG content with hash-derived colors
@@ -230,10 +222,15 @@ function composeSvg(buckets) {
   // Shape selected by style index, color applied by recoloring
   const head = recolor(extractContent(parts.heads[headStyle] || ''), main, emAccent);
   const body = recolor(extractContent(parts.bodies[bodyStyle] || ''), main, emAccent);
-  const darkOutline = `hsl(${main.h}, ${Math.max(main.s - 40, 10)}%, ${Math.max(main.l - 30, 8)}%)`;
-  const eyes = addStroke(recolor(extractContent(parts.eyes[eyeStyle] || ''), emAccent, main), darkOutline);
-  const mouth = addStroke(recolor(extractContent(parts.mouths[mouthStyle] || ''), emAccent, main), darkOutline);
-  const acc = addStroke(recolor(extractContent(parts.accessories[accStyle] || ''), accAccent, main), darkOutline);
+  
+  // Detail parts (eyes, mouths, acc) use hue rotation to preserve internal detail
+  // Source band is blue (h≈198), so we rotate by (targetHue - 198)
+  const srcHue = 198; // band 0 blue
+  const emRotate = emAccent.h - srcHue;
+  const accRotate = accAccent.h - srcHue;
+  const eyes = extractContent(parts.eyes[eyeStyle] || '');
+  const mouth = extractContent(parts.mouths[mouthStyle] || '');
+  const acc = extractContent(parts.accessories[accStyle] || '');
 
   // Traced SVGs use 600x600 coords, hand-drawn use 300x300
   const vb = partsSource === 'traced' ? '0 0 600 600' : '0 0 300 300';
@@ -241,12 +238,16 @@ function composeSvg(buckets) {
   const partT = partsSource === 'traced' ? '' : 'translate(22, -10) scale(0.85)';
   
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}">
+    <defs>
+      <filter id="emHue"><feColorMatrix type="hueRotate" values="${emRotate}"/></filter>
+      <filter id="accHue"><feColorMatrix type="hueRotate" values="${accRotate}"/></filter>
+    </defs>
     <g class="robot">
       <g ${bodyT ? `transform="${bodyT}"` : ''}>${body}</g>
       <g ${partT ? `transform="${partT}"` : ''}>${head}</g>
-      <g ${partT ? `transform="${partT}"` : ''}>${mouth}</g>
-      <g ${partT ? `transform="${partT}"` : ''}>${eyes}</g>
-      <g ${partT ? `transform="${partT}"` : ''}>${acc}</g>
+      <g ${partT ? `transform="${partT}"` : ''} filter="url(#emHue)">${mouth}</g>
+      <g ${partT ? `transform="${partT}"` : ''} filter="url(#emHue)">${eyes}</g>
+      <g ${partT ? `transform="${partT}"` : ''} filter="url(#accHue)">${acc}</g>
     </g>
   </svg>`;
 }
