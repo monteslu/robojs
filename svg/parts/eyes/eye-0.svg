@@ -1,21 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
-  <style>
-    .outline { fill: #1a1a1a; stroke: #1a1a1a; stroke-width: 2; }
-    .fill { fill: #ffffff; stroke: none; }
-    .highlight { fill: #4ade80; opacity: 0.5; stroke: none; }
-    .shadow { fill: #d1d5db; opacity: 0.4; stroke: none; }
-    .neck { fill: #9ca3af; stroke: #6b7280; stroke-width: 2; }
-    .rivet { fill: #1a1a1a; stroke: none; }
-    .accent { fill: #ef4444; stroke: none; }
-    .accent-stroke { stroke: #ef4444; fill: none; }
-    .accent2 { fill: #3b82f6; stroke: none; }
-    .accent2-stroke { stroke: #3b82f6; fill: none; }
-    line.outline { fill: none; stroke: #1a1a1a; }
-  </style>
   <g class="eye">
-    <circle class="accent" cx="120" cy="135" r="22"/>
-   <circle class="outline" cx="120" cy="135" r="14"/>
-   <circle class="accent" cx="185" cy="130" r="18"/>
-   <circle class="outline" cx="185" cy="130" r="10"/>
+    <circle fill="#ef4444" stroke="none" cx="120" cy="135" r="22"/>
+   <circle fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" cx="120" cy="135" r="14"/>
+   <circle fill="#ef4444" stroke="none" cx="185" cy="130" r="18"/>
+   <circle fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" cx="185" cy="130" r="10"/>
   </g>
 </svg>
