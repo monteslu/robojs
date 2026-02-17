@@ -104,17 +104,20 @@ function extractContent(svgString) {
  * @returns {string} Complete SVG string
  */
 export function composeSvg(parts, buckets) {
-  const [,,,, , bhColor, emColor] = buckets;
+  const [bodyStyle, headStyle, eyeStyle, mouthStyle, accStyle, bhColor, emColor, accColor] = buckets;
 
   const main = COLORS[bhColor] || COLORS[0];
   const accent = COLORS[emColor] || COLORS[9];
+  const accAccent = COLORS[accColor] || COLORS[8];
   const styles = generateStyles(main.h, accent.h);
 
-  const headContent = recolor(extractContent(parts.head), main, accent);
-  const bodyContent = recolor(extractContent(parts.body), main, accent);
-  const eyeContent = recolor(extractContent(parts.eyes), main, accent);
-  const mouthContent = recolor(extractContent(parts.mouth), main, accent);
-  const accContent = recolor(extractContent(parts.accessory), main, accent);
+  // 2D part lookup: parts[type][band][col]
+  // Body/head use bhColor band, eyes/mouth use emColor band, acc uses accColor band
+  const headContent = recolor(extractContent((parts.head[bhColor] || [])[headStyle] || ''), main, accent);
+  const bodyContent = recolor(extractContent((parts.body[bhColor] || [])[bodyStyle] || ''), main, accent);
+  const eyeContent = recolor(extractContent((parts.eyes[emColor] || [])[eyeStyle] || ''), accent, main);
+  const mouthContent = recolor(extractContent((parts.mouth[emColor] || [])[mouthStyle] || ''), accent, main);
+  const accContent = recolor(extractContent((parts.accessory[accColor] || [])[accStyle] || ''), accAccent, main);
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
   ${styles}
