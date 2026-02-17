@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <!-- Head 8: Oval / egg shape, smooth vertical ellipse -->
+  <g class="head">
+    <ellipse fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" cx="150" cy="150" rx="90" ry="110"/>
+    <ellipse fill="#ffffff" stroke="none" cx="150" cy="150" rx="82" ry="102"/>
+    <ellipse fill="#4ade80" opacity="0.5" stroke="none" cx="120" cy="110" rx="14" ry="30" transform="rotate(-10, 120, 110)"/>
+    <circle fill="#4ade80" opacity="0.5" stroke="none" cx="110" cy="145" r="5"/>
+  </g>
+</svg>

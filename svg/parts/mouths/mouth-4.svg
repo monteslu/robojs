@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <g class="mouth">
+    <path fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" d="M 110 175 L 200 175 L 200 205 L 110 205 Z"/>
+   <path fill="#ef4444" stroke="none" d="M 114 179 L 196 179 L 196 201 L 114 201 Z"/>
+   <path fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" d="M 114 179 L 128 190 L 142 179 L 156 190 L 170 179 L 184 190 L 196 179"/>
+  </g>
+</svg>

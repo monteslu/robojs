@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <!-- Head 1: Rounded rectangular dome / tombstone / arch shape, flat bottom, curved top -->
+  <g class="head">
+    <path fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" d="
+      M 80 250
+      L 80 120
+      C 80 55, 130 30, 150 30
+      C 170 30, 220 55, 220 120
+      L 220 250
+      Z
+    "/>
+    <path fill="#ffffff" stroke="none" d="
+      M 88 245
+      L 88 122
+      C 88 62, 134 38, 150 38
+      C 166 38, 212 62, 212 122
+      L 212 245
+      Z
+    "/>
+    <ellipse fill="#4ade80" opacity="0.5" stroke="none" cx="118" cy="100" rx="12" ry="30" transform="rotate(-10, 118, 100)"/>
+    <circle fill="#4ade80" opacity="0.5" stroke="none" cx="108" cy="135" r="4"/>
+    <!-- Rivets along bottom -->
+    <circle fill="#1a1a1a" stroke="none" cx="95" cy="245" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="115" cy="245" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="135" cy="245" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="155" cy="245" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="175" cy="245" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="195" cy="245" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="215" cy="245" r="3"/>
+  </g>
+</svg>

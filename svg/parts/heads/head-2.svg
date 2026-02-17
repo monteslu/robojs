@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <!-- Head 2: Helmet/hood shape - dome on top curving down, rectangular notch on right for face opening -->
+  <g class="head">
+    <path fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" d="
+      M 70 240
+      L 70 130
+      C 70 55, 120 30, 160 30
+      C 200 30, 240 60, 240 120
+      L 240 180
+      L 200 180
+      L 200 240
+      Z
+    "/>
+    <path fill="#ffffff" stroke="none" d="
+      M 78 234
+      L 78 132
+      C 78 62, 124 38, 160 38
+      C 196 38, 232 66, 232 122
+      L 232 174
+      L 196 174
+      L 196 234
+      Z
+    "/>
+    <ellipse fill="#4ade80" opacity="0.5" stroke="none" cx="115" cy="95" rx="14" ry="32" transform="rotate(-12, 115, 95)"/>
+    <circle fill="#4ade80" opacity="0.5" stroke="none" cx="105" cy="130" r="4"/>
+  </g>
+</svg>

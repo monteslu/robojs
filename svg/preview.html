@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>RoboJS SVG Preview</title>
+<style>
+  * { box-sizing: border-box; }
+  body { 
+    background: #0f0f23; color: #e0e0e0; 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    padding: 20px; margin: 0;
+  }
+  h1 { color: #7ec8e3; margin-bottom: 5px; }
+  h2 { color: #9ca3af; font-size: 14px; font-weight: normal; margin-top: 0; }
+  
+  .controls { 
+    display: flex; gap: 16px; align-items: center; 
+    margin: 20px 0; flex-wrap: wrap;
+    background: #1a1a3e; padding: 16px; border-radius: 8px;
+  }
+  .controls label { font-size: 13px; color: #9ca3af; }
+  .controls input[type="text"] { 
+    padding: 8px 12px; border-radius: 6px; border: 1px solid #333;
+    background: #16213e; color: #e0e0e0; font-size: 16px; width: 300px;
+  }
+  .controls button {
+    padding: 8px 16px; border-radius: 6px; border: none;
+    background: #4f46e5; color: white; cursor: pointer; font-size: 14px;
+  }
+  .controls button:hover { background: #6366f1; }
+  
+  .robot-display {
+    display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap;
+    margin: 20px 0;
+  }
+  .robot-card {
+    background: #1a1a3e; border-radius: 12px; padding: 16px;
+    text-align: center; min-width: 200px;
+  }
+  .robot-card svg { width: 200px; height: 200px; }
+  .robot-card .label { font-size: 12px; color: #6b7280; margin-top: 8px; }
+  .robot-card .hash { font-family: monospace; font-size: 10px; color: #4b5563; word-break: break-all; }
+  
+  .gallery {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px; margin: 20px 0;
+  }
+  .gallery-item {
+    background: #1a1a3e; border-radius: 8px; padding: 12px;
+    text-align: center;
+  }
+  .gallery-item svg { width: 140px; height: 140px; }
+  .gallery-item .name { font-size: 11px; color: #6b7280; margin-top: 4px; }
+  
+  .parts-grid {
+    display: grid; grid-template-columns: repeat(10, 1fr);
+    gap: 8px; margin: 16px 0;
+  }
+  .part-cell {
+    background: #16213e; border-radius: 6px; padding: 8px;
+    text-align: center; position: relative; cursor: pointer;
+  }
+  .part-cell svg { width: 80px; height: 80px; }
+  .part-cell .idx { font-size: 10px; color: #e0e0e0; }
+  .part-cell:hover .tooltip {
+    display: block;
+  }
+  .tooltip {
+    display: none; position: absolute; z-index: 100;
+    bottom: 100%; left: 50%; transform: translateX(-50%);
+    background: #1a1a3e; border: 1px solid #4f46e5; border-radius: 8px;
+    padding: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    pointer-events: none;
+  }
+  .tooltip svg { width: 200px; height: 200px; }
+  
+  h3 { color: #7ec8e3; margin-top: 30px; }
+  
+  .color-strip {
+    display: flex; gap: 4px; margin: 8px 0;
+  }
+  .color-swatch {
+    width: 30px; height: 30px; border-radius: 4px; cursor: pointer;
+    border: 2px solid transparent;
+  }
+  .color-swatch:hover { border-color: white; }
+</style>
+</head>
+<body>
+
+<h1>🤖 RoboJS SVG Preview</h1>
+<h2>Deterministic robot avatars — 2^128 unique combinations</h2>
+
+<div class="controls">
+  <div>
+    <label>Type anything:</label><br>
+    <input type="text" id="hashInput" placeholder="email, username, whatever..." value="monteslu">
+  </div>
+  <button onclick="renderRandom()">🎲 Random</button>
+  <button id="toggleSource" onclick="togglePartsSource()">📐 Switch to Hand-drawn</button>
+</div>
+
+<div class="robot-display" id="mainDisplay"></div>
+
+<h3>Gallery — Team Robots</h3>
+<div class="gallery" id="gallery"></div>
+
+<h3>Color Palette (10 hues from sprite sheet)</h3>
+<div class="color-strip" id="colorStrip"></div>
+
+<h3>Parts Library</h3>
+<div id="partsLibrary"></div>
+
+<script type="module">
+import md5 from 'https://esm.sh/blueimp-md5@2.19.0';
+
+// Actual sprite sheet colors sampled from set1.png
+const COLORS = [
+  { h: 198, s: 75, l: 51 },  // 0: Blue
+  { h: 26,  s: 40, l: 39 },  // 1: Brown
+  { h: 129, s: 53, l: 46 },  // 2: Green
+  { h: 216, s: 3,  l: 66 },  // 3: Gray
+  { h: 32,  s: 92, l: 54 },  // 4: Orange
+  { h: 331, s: 100,l: 64 },  // 5: Pink
+  { h: 301, s: 57, l: 36 },  // 6: Purple
+  { h: 358, s: 85, l: 52 },  // 7: Red
+  { h: 240, s: 4,  l: 95 },  // 8: Near-white
+  { h: 56,  s: 94, l: 58 },  // 9: Yellow
+];
+const PART_TYPES = ['heads', 'bodies', 'eyes', 'mouths', 'accessories'];
+const PART_SINGULAR = { heads: 'head', bodies: 'body', eyes: 'eye', mouths: 'mouth', accessories: 'accessory' };
+
+// Load all SVG parts — 10 per type, single index
+const parts = {};
+let partsSource = 'traced';
+async function loadParts(source) {
+  partsSource = source || 'traced';
+  const dir = partsSource === 'traced' ? 'parts-traced' : 'parts';
+  for (const type of PART_TYPES) {
+    parts[type] = [];
+    const singular = PART_SINGULAR[type];
+    for (let i = 0; i < 10; i++) {
+      try {
+        const resp = await fetch(`${dir}/${type}/${singular}-${i}.svg`);
+        if (!resp.ok) throw new Error('not found');
+        parts[type].push(await resp.text());
+      } catch(e) {
+        try {
+          const fallbackDir = dir === 'parts-traced' ? 'parts' : 'parts-traced';
+          const resp2 = await fetch(`${fallbackDir}/${type}/${singular}-${i}.svg`);
+          parts[type].push(await resp2.text());
+        } catch(e2) {
+          parts[type].push('<svg></svg>');
+        }
+      }
+    }
+  }
+}
+
+function hexToBytes(hex) {
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < hex.length; i += 2) {
+    bytes[i / 2] = parseInt(hex.substring(i, i + 2), 16);
+  }
+  return bytes;
+}
+
+function getBuckets(hash) {
+  const cleanHash = hash.replace(/-/g, '');
+  const bytes = hexToBytes(cleanHash);
+  const buckets = [];
+  for (let i = 0; i < bytes.length; i += 2) {
+    const value = (bytes[i] << 8) + bytes[i + 1];
+    buckets.push(value % 10);
+  }
+  return buckets;
+}
+
+function extractContent(svgString) {
+  // Try <g> wrapper first (hand-drawn), then strip <svg> tags (traced)
+  const gMatch = svgString.match(/<g[^>]*>([\s\S]*?)<\/g>/);
+  if (gMatch) return gMatch[1];
+  // Traced SVGs: strip <svg...> and </svg>, return inner paths
+  const vbMatch = svgString.match(/viewBox="0 0 (\d+) (\d+)"/);
+  const vbSize = vbMatch ? parseInt(vbMatch[1]) : 600;
+  let content = svgString.replace(/<svg[^>]*>/, '').replace(/<\/svg>/, '');
+  // Normalize to 600x600 coordinate space (heads/bodies are 600, detail parts may be 900)
+  if (vbSize !== 600) {
+    const scale = 600 / vbSize;
+    content = `<g transform="scale(${scale})">${content}</g>`;
+  }
+  return content;
+}
+
+// Replace placeholder colors in SVG content with hash-derived colors
+function recolor(content, main, accent) {
+  const outline = `hsl(${main.h}, ${Math.max(main.s - 40, 10)}%, ${Math.max(main.l - 30, 12)}%)`;
+  const fill = `hsl(${main.h}, ${main.s}%, ${main.l}%)`;
+  const highlight = `hsl(${main.h}, ${Math.max(main.s - 15, 10)}%, ${Math.min(main.l + 20, 85)}%)`;
+  const shadow = `hsl(${main.h}, ${main.s}%, ${Math.max(main.l - 15, 20)}%)`;
+  const accentFill = `hsl(${accent.h}, ${accent.s}%, ${accent.l}%)`;
+
+  const darkAccent = `hsl(${main.h}, ${main.s}%, ${Math.max(main.l - 15, 20)}%)`;
+  const midFill = `hsl(${main.h}, ${main.s}%, ${main.l}%)`;
+  
+  return content
+    .replaceAll('#1a1a1a', outline)
+    .replaceAll('#ef4444', darkAccent)
+    .replaceAll('#3b82f6', midFill)
+    .replaceAll('#ffffff', fill)
+    .replaceAll('#4ade80', highlight)
+    .replaceAll('#d1d5db', shadow);
+}
+
+// Add visible outline stroke to small parts (eyes, mouths)
+function addStroke(content, strokeColor) {
+  // Replace stroke colors with a contrasting outline and increase stroke width
+  return content
+    .replace(/stroke="[^"]*"/g, `stroke="${strokeColor}"`)
+    .replace(/stroke-width="[^"]*"/g, 'stroke-width="3"');
+}
+
+let svgCounter = 0;
+function composeSvg(buckets) {
+  const uid = svgCounter++;
+  const [bodyStyle, headStyle, eyeStyle, mouthStyle, accStyle, bhColor, emColor, accColor] = buckets;
+  
+  const main = COLORS[bhColor] || COLORS[0];
+  const emAccent = COLORS[emColor] || COLORS[9];
+  const accAccent = COLORS[accColor] || COLORS[8];
+
+  // All parts use hue-rotate to preserve traced detail
+  // Heads/bodies traced from band 2 (green, h≈129)
+  // Eyes/mouths/acc traced from band 0 (blue, h≈198)
+  const bhSrcHue = 129;
+  const emSrcHue = 198;
+  const bhRotate = main.h - bhSrcHue;
+  const emRotate = emAccent.h - emSrcHue;
+  const accRotate = accAccent.h - emSrcHue;
+  const head = extractContent(parts.heads[headStyle] || '');
+  const body = extractContent(parts.bodies[bodyStyle] || '');
+  const eyes = extractContent(parts.eyes[eyeStyle] || '');
+  const mouth = extractContent(parts.mouths[mouthStyle] || '');
+  const acc = extractContent(parts.accessories[accStyle] || '');
+
+  // Traced SVGs use 600x600 coords, hand-drawn use 300x300
+  const vb = partsSource === 'traced' ? '0 0 600 600' : '0 0 300 300';
+  const bodyT = partsSource === 'traced' ? '' : 'translate(15, 80) scale(0.9)';
+  const partT = partsSource === 'traced' ? '' : 'translate(22, -10) scale(0.85)';
+  
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}">
+    <defs>
+      <filter id="bh${uid}"><feColorMatrix type="hueRotate" values="${bhRotate}"/></filter>
+      <filter id="em${uid}"><feColorMatrix type="hueRotate" values="${emRotate}"/></filter>
+      <filter id="ac${uid}"><feColorMatrix type="hueRotate" values="${accRotate}"/></filter>
+    </defs>
+    <g class="robot">
+      <g ${bodyT ? `transform="${bodyT}"` : ''} filter="url(#bh${uid})">${body}</g>
+      <g ${partT ? `transform="${partT}"` : ''} filter="url(#bh${uid})">${head}</g>
+      <g ${partT ? `transform="${partT}"` : ''} filter="url(#em${uid})">${mouth}</g>
+      <g ${partT ? `transform="${partT}"` : ''} filter="url(#em${uid})">${eyes}</g>
+      <g ${partT ? `transform="${partT}"` : ''} filter="url(#ac${uid})">${acc}</g>
+    </g>
+  </svg>`;
+}
+
+function renderRobot(input) {
+  const hash = md5(input);
+  const buckets = getBuckets(hash);
+  return { svg: composeSvg(buckets), hash, buckets };
+}
+
+// UI functions
+window.renderFromInput = function() {
+  const input = document.getElementById('hashInput').value;
+  const { svg, hash, buckets } = renderRobot(input);
+  document.getElementById('mainDisplay').innerHTML = `
+    <div class="robot-card">
+      ${svg}
+      <div class="label">"${input}"</div>
+      <div class="hash">${hash}</div>
+      <div class="label">buckets: [${buckets.join(', ')}]</div>
+    </div>
+  `;
+};
+
+window.renderRandom = function() {
+  const rand = Math.random().toString(36).substring(2, 10);
+  document.getElementById('hashInput').value = rand;
+  window.renderFromInput();
+};
+
+// Gallery
+function renderGallery() {
+  const names = ['monteslu', 'radagast', 'pippin', 'gimli', 'luthien', 'gandalf', 'frodo', 'aragorn', 'legolas', 'sauron', 'openclaw', 'agentgate'];
+  const gallery = document.getElementById('gallery');
+  gallery.innerHTML = names.map(name => {
+    const { svg } = renderRobot(name);
+    return `<div class="gallery-item">${svg}<div class="name">${name}</div></div>`;
+  }).join('');
+}
+
+// Color strip
+function renderColorStrip() {
+  const strip = document.getElementById('colorStrip');
+  strip.innerHTML = COLORS.map((c, i) => 
+    `<div class="color-swatch" style="background: hsl(${c.h}, ${c.s}%, ${c.l}%)" title="Index ${i}: hsl(${c.h}, ${c.s}%, ${c.l}%)"></div>`
+  ).join('');
+}
+
+function renderPartsLibrary() {
+  const container = document.getElementById('partsLibrary');
+  container.innerHTML = '';
+  const pvb = partsSource === 'traced' ? '0 0 600 600' : '0 0 300 300';
+  
+  for (const type of PART_TYPES) {
+    const singular = PART_SINGULAR[type];
+    let html = `<h4 style="color:#9ca3af;text-transform:capitalize">${type}</h4><div class="parts-grid">`;
+    for (let i = 0; i < 10; i++) {
+      const content = extractContent(parts[type][i] || '');
+      html += `<div class="part-cell">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="${pvb}">
+          ${content}
+        </svg>
+        <div class="idx">${singular}-${i}</div>
+        <div class="tooltip">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="${pvb}">
+            ${content}
+          </svg>
+        </div>
+      </div>`;
+    }
+    html += '</div>';
+    container.innerHTML += html;
+  }
+}
+
+// Init
+await loadParts();
+window.renderFromInput();
+renderGallery();
+renderColorStrip();
+renderPartsLibrary();
+
+// Toggle between traced and hand-drawn parts
+window.togglePartsSource = async function() {
+  const newSource = partsSource === 'traced' ? 'hand-drawn' : 'traced';
+  await loadParts(newSource);
+  document.getElementById('toggleSource').textContent = 
+    partsSource === 'traced' ? '📐 Switch to Hand-drawn' : '🔍 Switch to Traced';
+  document.getElementById('partsLibrary').innerHTML = '';
+  window.renderFromInput();
+  renderGallery();
+  renderPartsLibrary();
+};
+
+// Live render on typing
+document.getElementById('hashInput').addEventListener('input', () => window.renderFromInput());
+</script>
+</body>
+</html>

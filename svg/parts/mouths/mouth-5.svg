@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <g class="mouth">
+    <rect fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" x="120" y="178" width="60" height="28" rx="4"/>
+   <line stroke="#ef4444" fill="none" x1="130" y1="182" x2="130" y2="202" stroke-width="3"/>
+   <line stroke="#ef4444" fill="none" x1="140" y1="182" x2="140" y2="202" stroke-width="3"/>
+   <line stroke="#ef4444" fill="none" x1="150" y1="182" x2="150" y2="202" stroke-width="3"/>
+   <line stroke="#ef4444" fill="none" x1="160" y1="182" x2="160" y2="202" stroke-width="3"/>
+   <line stroke="#ef4444" fill="none" x1="170" y1="182" x2="170" y2="202" stroke-width="3"/>
+  </g>
+</svg>

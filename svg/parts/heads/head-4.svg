@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <!-- Head 4: Cylinder / canister shape, rounded edges, rivets top and bottom -->
+  <g class="head">
+    <path fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" d="
+      M 85 240
+      C 85 250, 215 250, 215 240
+      L 215 80
+      C 215 50, 200 40, 150 40
+      C 100 40, 85 50, 85 80
+      Z
+    "/>
+    <path fill="#ffffff" stroke="none" d="
+      M 93 238
+      C 93 246, 207 246, 207 238
+      L 207 82
+      C 207 56, 194 48, 150 48
+      C 106 48, 93 56, 93 82
+      Z
+    "/>
+    <ellipse fill="#4ade80" opacity="0.5" stroke="none" cx="120" cy="110" rx="10" ry="30" transform="rotate(-5, 120, 110)"/>
+    <circle fill="#4ade80" opacity="0.5" stroke="none" cx="112" cy="145" r="4"/>
+    <!-- Top rivets -->
+    <circle fill="#1a1a1a" stroke="none" cx="110" cy="52" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="130" cy="47" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="150" cy="45" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="170" cy="47" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="190" cy="52" r="3"/>
+    <!-- Bottom rivets -->
+    <circle fill="#1a1a1a" stroke="none" cx="110" cy="242" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="130" cy="245" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="150" cy="246" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="170" cy="245" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="190" cy="242" r="3"/>
+  </g>
+</svg>

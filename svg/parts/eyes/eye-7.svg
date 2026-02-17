@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <g class="eye">
+    <circle fill="#ef4444" stroke="none" cx="120" cy="130" r="28"/>
+   <circle fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" cx="122" cy="128" r="12"/>
+   <circle fill="#4ade80" opacity="0.5" stroke="none" cx="112" cy="120" r="5"/>
+   <circle fill="#ef4444" stroke="none" cx="190" cy="140" r="14"/>
+   <circle fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" cx="191" cy="139" r="6"/>
+  </g>
+</svg>

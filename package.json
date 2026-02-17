@@ -12,6 +12,7 @@
     "set1.png"
   ],
   "scripts": {
+    "build": "node scripts/build-svg.js",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint src/",
@@ -36,7 +37,9 @@
   },
   "homepage": "https://github.com/monteslu/robojs#readme",
   "dependencies": {
-    "blueimp-md5": "^2.19.0"
+    "blueimp-md5": "^2.19.0",
+    "sharp": "^0.34.5",
+    "svgo": "^4.0.0"
   },
   "devDependencies": {
     "eslint": "^9.0.0",

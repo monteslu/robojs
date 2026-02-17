@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <!-- Head 0: Shield/guitar-pick - wide dome top, pointed chin bottom -->
+  <g class="head">
+    <path fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" d="
+      M 150 30
+      C 210 30, 260 60, 265 120
+      C 270 170, 245 220, 200 250
+      C 180 262, 160 268, 150 270
+      C 140 268, 120 262, 100 250
+      C 55 220, 30 170, 35 120
+      C 40 60, 90 30, 150 30
+      Z
+    "/>
+    <path fill="#ffffff" stroke="none" d="
+      M 150 38
+      C 206 38, 252 66, 257 122
+      C 262 168, 238 216, 196 244
+      C 176 256, 158 262, 150 264
+      C 142 262, 124 256, 104 244
+      C 62 216, 38 168, 43 122
+      C 48 66, 94 38, 150 38
+      Z
+    "/>
+    <ellipse fill="#4ade80" opacity="0.5" stroke="none" cx="115" cy="100" rx="15" ry="35" transform="rotate(-15, 115, 100)"/>
+    <circle fill="#4ade80" opacity="0.5" stroke="none" cx="103" cy="142" r="5"/>
+    <circle fill="#1a1a1a" stroke="none" cx="82" cy="58" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="104" cy="44" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="128" cy="36" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="150" cy="34" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="172" cy="36" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="196" cy="44" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="218" cy="58" r="3"/>
+  </g>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <g class="eye">
+    <line stroke="#ef4444" fill="none" x1="105" y1="120" x2="135" y2="148" stroke-width="6"/>
+   <line stroke="#ef4444" fill="none" x1="135" y1="120" x2="105" y2="148" stroke-width="6"/>
+   <line stroke="#ef4444" fill="none" x1="170" y1="122" x2="196" y2="146" stroke-width="5"/>
+   <line stroke="#ef4444" fill="none" x1="196" y1="122" x2="170" y2="146" stroke-width="5"/>
+  </g>
+</svg>

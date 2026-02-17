@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <!-- Head 3: Capsule / pill shape, tall rounded rectangle with dome top, small notch at bottom -->
+  <g class="head">
+    <path fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" d="
+      M 90 250
+      L 90 100
+      C 90 45, 120 30, 150 30
+      C 180 30, 210 45, 210 100
+      L 210 250
+      L 170 250
+      L 170 260
+      L 130 260
+      L 130 250
+      Z
+    "/>
+    <path fill="#ffffff" stroke="none" d="
+      M 98 246
+      L 98 102
+      C 98 52, 124 38, 150 38
+      C 176 38, 202 52, 202 102
+      L 202 246
+      L 168 246
+      L 168 254
+      L 132 254
+      L 132 246
+      Z
+    "/>
+    <ellipse fill="#4ade80" opacity="0.5" stroke="none" cx="122" cy="90" rx="12" ry="28" transform="rotate(-8, 122, 90)"/>
+    <circle fill="#4ade80" opacity="0.5" stroke="none" cx="114" cy="122" r="4"/>
+  </g>
+</svg>

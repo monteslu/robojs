@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <g class="eye">
+    <path fill="#ef4444" stroke="none" d="M 95 125 L 145 120 L 140 145 L 100 142 Z"/>
+   <circle fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" cx="118" cy="133" r="7"/>
+   <path fill="#ef4444" stroke="none" d="M 165 120 L 210 128 L 205 145 L 168 140 Z"/>
+   <circle fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" cx="185" cy="135" r="6"/>
+  </g>
+</svg>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <g class="mouth">
+    <rect fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" x="100" y="175" width="100" height="35" rx="6"/>
+   <rect fill="#ef4444" stroke="none" x="106" y="181" width="88" height="23" rx="3"/>
+  </g>
+</svg>

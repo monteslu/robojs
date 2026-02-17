@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <g class="mouth">
+    <path fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" d="M 120 178 L 180 178 L 180 198 L 120 198 Z"/>
+   <path fill="#ef4444" stroke="none" d="M 124 182 L 176 182 L 176 194 L 124 194 Z"/>
+   <rect fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" x="140" y="198" width="12" height="10" rx="2"/>
+   <rect fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" x="154" y="198" width="10" height="8" rx="2"/>
+  </g>
+</svg>

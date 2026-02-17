@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <!-- Head 5: Inverted bucket / dome, boxy with rounded edges, wider at top, narrower at bottom -->
+  <g class="head">
+    <path fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" d="
+      M 100 250
+      L 75 120
+      C 70 60, 110 35, 150 35
+      C 190 35, 230 60, 225 120
+      L 200 250
+      Z
+    "/>
+    <path fill="#ffffff" stroke="none" d="
+      M 106 244
+      L 83 122
+      C 78 66, 114 43, 150 43
+      C 186 43, 222 66, 217 122
+      L 194 244
+      Z
+    "/>
+    <ellipse fill="#4ade80" opacity="0.5" stroke="none" cx="118" cy="95" rx="12" ry="28" transform="rotate(-10, 118, 95)"/>
+    <circle fill="#4ade80" opacity="0.5" stroke="none" cx="108" cy="128" r="4"/>
+    <!-- Bottom rivets -->
+    <circle fill="#1a1a1a" stroke="none" cx="115" cy="245" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="135" cy="247" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="155" cy="247" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="175" cy="247" r="3"/>
+    <circle fill="#1a1a1a" stroke="none" cx="195" cy="245" r="3"/>
+  </g>
+</svg>
