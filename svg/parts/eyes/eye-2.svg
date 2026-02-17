@@ -1,1 +1,8 @@
-<svg width="300" height="300" viewBox="0 0 600 600" version="1.1" xmlns="http://www.w3.org/2000/svg" desc="Created with imagetracer.js version 1.2.6" ><path fill="#3b82f6" stroke="#3b82f6" stroke-width="1" opacity="1" d="M 286 242 L 307.5 242 L 308 244 L 315.5 244 Q 314.7 247.3 320 246 L 320 248 L 324 248 L 324 250 L 326 250 L 326 252 L 328 252 L 328 254 L 332 256 L 332 260 L 334 260 L 334 266 L 336 266.5 L 336 274 L 334 274 L 334 280 L 332 280 L 332 284 L 330 284 L 328 288 L 324 288 L 322 292 L 318 292 L 318 294 Q 312.8 292.3 314 296 L 308 296 L 307.5 298 Q 298.7 296.6 299.5 300 L 288.5 300 L 287.5 302 L 272.5 302 L 271.5 304 L 256.5 304 L 255.5 306 L 238.5 306 L 237.5 308 L 222 308 L 221.5 306 L 212 306 L 212 304 L 208.5 304 Q 209.3 300.8 204 302 L 204 300 L 202 300 L 202 298 L 198 296 L 198 292 L 196 292 Q 197.2 286.7 194 287.5 L 194 276 L 196 276 L 196 270 L 198 270 L 198 268 L 200 268 L 200 266 L 202 266 L 202 264 L 204 264 L 206 260 L 210 260 L 212 256 L 218 256 L 218 254 L 224 254 L 224 252 L 230 252 L 230.5 250 L 237.5 250 L 238.5 248 L 247.5 248 L 248.5 246 L 269.5 246 L 270.5 244 L 285.5 244 L 286 242 Z " /></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <g class="eye">
+    <rect fill="#ef4444" stroke="none" x="95" y="118" width="40" height="30" rx="4"/>
+   <circle fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" cx="115" cy="133" r="8"/>
+   <rect fill="#ef4444" stroke="none" x="165" y="120" width="35" height="26" rx="4"/>
+   <circle fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" cx="182" cy="133" r="6"/>
+  </g>
+</svg>
