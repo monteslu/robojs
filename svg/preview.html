@@ -224,13 +224,13 @@ function composeSvg(buckets) {
   // Body and head use main color
   const head = recolor(extractContent(parts.heads[headStyle] || ''), main, emAccent);
   const body = recolor(extractContent(parts.bodies[bodyStyle] || ''), main, emAccent);
-  // Eyes and mouth use emColor — also add contrasting outline stroke
-  const eyeOutline = `hsl(${emAccent.h}, ${Math.max(emAccent.s - 40, 10)}%, ${Math.max(emAccent.l - 30, 8)}%)`;
-  const eyes = addStroke(recolor(extractContent(parts.eyes[eyeStyle] || ''), emAccent, main), eyeOutline);
-  const mouthOutline = `hsl(${emAccent.h}, ${Math.max(emAccent.s - 40, 10)}%, ${Math.max(emAccent.l - 30, 8)}%)`;
-  const mouth = addStroke(recolor(extractContent(parts.mouths[mouthStyle] || ''), emAccent, main), mouthOutline);
-  // Accessories use accColor
-  const acc = recolor(extractContent(parts.accessories[accStyle] || ''), accAccent, main);
+  // Dark outline derived from main body color — shared across ALL parts
+  const darkOutline = `hsl(${main.h}, ${Math.max(main.s - 40, 10)}%, ${Math.max(main.l - 30, 8)}%)`;
+  // Eyes/mouth use emColor as fill, dark outline for stroke
+  const eyes = addStroke(recolor(extractContent(parts.eyes[eyeStyle] || ''), emAccent, main), darkOutline);
+  const mouth = addStroke(recolor(extractContent(parts.mouths[mouthStyle] || ''), emAccent, main), darkOutline);
+  // Accessories use accColor as fill, dark outline for stroke
+  const acc = addStroke(recolor(extractContent(parts.accessories[accStyle] || ''), accAccent, main), darkOutline);
 
   // Traced SVGs use 600x600 coords, hand-drawn use 300x300
   const vb = partsSource === 'traced' ? '0 0 600 600' : '0 0 300 300';
