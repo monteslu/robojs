@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <g class="body">
+    <path class="outline" d="M 60 300 L 60 210 C 60 180, 90 160, 150 150 C 210 160, 240 180, 240 210 L 240 300 Z"/>
+   <path class="fill" d="M 68 296 L 68 212 C 68 186, 96 168, 150 158 C 204 168, 232 186, 232 212 L 232 296 Z"/>
+   <circle class="neck" cx="130" cy="160" r="12"/>
+   <circle class="neck" cx="170" cy="160" r="12"/>
+   <ellipse class="highlight" cx="115" cy="210" rx="12" ry="25"/>
+  </g>
+</svg>
