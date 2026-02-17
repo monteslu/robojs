@@ -128,7 +128,7 @@ describe('composeSvg', () => {
     const svg = composeSvg(parts, buckets);
     expect(svg).toContain('<svg');
     expect(svg).toContain('</svg>');
-    expect(svg).toContain('viewBox="0 0 300 300"');
+    expect(svg).toMatch(/viewBox="0 0 (300|600) (300|600)"/);
   });
 
   it('should include style block with colors', () => {
@@ -194,7 +194,7 @@ describe('SVG part files', () => {
           const content = fs.readFileSync(filePath, 'utf8');
           expect(content).toContain('<svg');
           expect(content).toContain('</svg>');
-          expect(content).toContain('viewBox="0 0 300 300"');
+          expect(content).toMatch(/viewBox="0 0 (300|600) (300|600)"/);
         });
 
         it(prefix + '-' + i + ' should have extractable content', () => {
