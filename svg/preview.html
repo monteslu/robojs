@@ -149,30 +149,36 @@ function extractContent(svgString) {
   return match ? match[1] : '';
 }
 
+// Replace placeholder colors in SVG content with hash-derived colors
+function recolor(content, mainHue, accentHue) {
+  const outline = `hsl(${mainHue}, 15%, 20%)`;
+  const fill = `hsl(${mainHue}, 70%, 50%)`;
+  const highlight = `hsl(${mainHue}, 60%, 70%)`;
+  const shadow = `hsl(${mainHue}, 70%, 35%)`;
+  const accent = `hsl(${accentHue}, 85%, 60%)`;
+
+  return content
+    .replaceAll('#1a1a1a', outline)   // outline
+    .replaceAll('#ffffff', fill)       // fill
+    .replaceAll('#4ade80', highlight)  // highlight
+    .replaceAll('#d1d5db', shadow)     // shadow
+    .replaceAll('#ef4444', accent)     // accent
+    .replaceAll('#3b82f6', accent);    // accent2 (use accent for now)
+}
+
 function composeSvg(buckets) {
   const [bodyStyle, headStyle, eyeStyle, mouthStyle, accStyle, bhColor, emColor, accColor] = buckets;
   
   const mainHue = COLOR_HUES[bhColor] || 120;
   const accentHue = COLOR_HUES[emColor] || 45;
 
-  const head = extractContent(parts.heads[headStyle] || '');
-  const body = extractContent(parts.bodies[bodyStyle] || '');
-  const eyes = extractContent(parts.eyes[eyeStyle] || '');
-  const mouth = extractContent(parts.mouths[mouthStyle] || '');
-  const acc = extractContent(parts.accessories[accStyle] || '');
+  const head = recolor(extractContent(parts.heads[headStyle] || ''), mainHue, accentHue);
+  const body = recolor(extractContent(parts.bodies[bodyStyle] || ''), mainHue, accentHue);
+  const eyes = recolor(extractContent(parts.eyes[eyeStyle] || ''), mainHue, accentHue);
+  const mouth = recolor(extractContent(parts.mouths[mouthStyle] || ''), mainHue, accentHue);
+  const acc = recolor(extractContent(parts.accessories[accStyle] || ''), mainHue, accentHue);
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
-    <style>
-      .outline { fill: hsl(${mainHue}, 15%, 20%); stroke: hsl(${mainHue}, 15%, 20%); stroke-width: 2; }
-      .fill { fill: hsl(${mainHue}, 70%, 50%); stroke: none; }
-      .highlight { fill: hsl(${mainHue}, 60%, 70%); opacity: 0.5; stroke: none; }
-      .shadow { fill: hsl(${mainHue}, 70%, 35%); opacity: 0.4; stroke: none; }
-      .neck { fill: hsl(0, 0%, 55%); stroke: hsl(0, 0%, 35%); stroke-width: 2; }
-      .rivet { fill: hsl(${mainHue}, 15%, 20%); stroke: none; }
-      .accent { fill: hsl(${accentHue}, 85%, 60%); stroke: none; }
-      .accent-stroke { stroke: hsl(${accentHue}, 85%, 60%); fill: none; }
-      line.outline { fill: none; }
-    </style>
     <g class="robot">
       <g transform="translate(15, 80) scale(0.9)">${body}</g>
       <g transform="translate(22, -10) scale(0.85)">${head}</g>
@@ -237,20 +243,9 @@ function renderPartsLibrary() {
     const singular = PART_SINGULAR[type];
     let html = `<h4 style="color:#9ca3af;text-transform:capitalize">${type}</h4><div class="parts-grid">`;
     for (let i = 0; i < 10; i++) {
-      const content = extractContent(parts[type][i] || '');
+      const content = recolor(extractContent(parts[type][i] || ''), mainHue, accentHue);
       html += `<div class="part-cell">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
-          <style>
-            .outline{fill:hsl(${mainHue},15%,20%);stroke:hsl(${mainHue},15%,20%);stroke-width:2}
-            .fill{fill:hsl(${mainHue},70%,50%);stroke:none}
-            .highlight{fill:hsl(${mainHue},60%,70%);opacity:0.5;stroke:none}
-            .shadow{fill:hsl(${mainHue},70%,35%);opacity:0.4;stroke:none}
-            .neck{fill:hsl(0,0%,55%);stroke:hsl(0,0%,35%);stroke-width:2}
-            .rivet{fill:hsl(${mainHue},15%,20%);stroke:none}
-            .accent{fill:hsl(${accentHue},85%,60%);stroke:none}
-            .accent-stroke{stroke:hsl(${accentHue},85%,60%);fill:none}
-            line.outline{fill:none}
-          </style>
           ${content}
         </svg>
         <div class="idx">${singular}-${i}</div>
