@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <g class="body">
+    <rect class="outline" x="105" y="160" width="90" height="140" rx="12"/>
+   <rect class="fill" x="113" y="168" width="74" height="128" rx="8"/>
+   <rect class="neck" x="132" y="140" width="36" height="24" rx="5"/>
+   <ellipse class="highlight" cx="132" cy="210" rx="8" ry="22"/>
+  </g>
+</svg>
