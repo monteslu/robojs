@@ -85,7 +85,6 @@
     <label>Type anything:</label><br>
     <input type="text" id="hashInput" placeholder="email, username, whatever..." value="monteslu">
   </div>
-  <button onclick="renderFromInput()">Generate</button>
   <button onclick="renderRandom()">🎲 Random</button>
 </div>
 
@@ -262,6 +261,9 @@ window.renderFromInput();
 renderGallery();
 renderColorStrip();
 renderPartsLibrary();
+
+// Live render on typing
+document.getElementById('hashInput').addEventListener('input', () => window.renderFromInput());
 </script>
 </body>
 </html>
