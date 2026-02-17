@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <!-- Head 1: Rounded rectangular dome / tombstone / arch shape, flat bottom, curved top -->
+  <g class="head">
+    <path class="outline" d="
+      M 80 250
+      L 80 120
+      C 80 55, 130 30, 150 30
+      C 170 30, 220 55, 220 120
+      L 220 250
+      Z
+    "/>
+    <path class="fill" d="
+      M 88 245
+      L 88 122
+      C 88 62, 134 38, 150 38
+      C 166 38, 212 62, 212 122
+      L 212 245
+      Z
+    "/>
+    <ellipse class="highlight" cx="118" cy="100" rx="12" ry="30" transform="rotate(-10, 118, 100)"/>
+    <circle class="highlight" cx="108" cy="135" r="4"/>
+    <!-- Rivets along bottom -->
+    <circle class="rivet" cx="95" cy="245" r="3"/>
+    <circle class="rivet" cx="115" cy="245" r="3"/>
+    <circle class="rivet" cx="135" cy="245" r="3"/>
+    <circle class="rivet" cx="155" cy="245" r="3"/>
+    <circle class="rivet" cx="175" cy="245" r="3"/>
+    <circle class="rivet" cx="195" cy="245" r="3"/>
+    <circle class="rivet" cx="215" cy="245" r="3"/>
+  </g>
+</svg>
