@@ -1,8 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
-  <g class="eye">
-    <ellipse fill="#ef4444" stroke="none" cx="120" cy="135" rx="22" ry="16" transform="rotate(10,120,135)"/>
-   <circle fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" cx="122" cy="137" r="7"/>
-   <ellipse fill="#ef4444" stroke="none" cx="185" cy="132" rx="18" ry="14" transform="rotate(-10,185,132)"/>
-   <circle fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2" cx="186" cy="134" r="6"/>
-  </g>
-</svg>
+<svg width="300" height="300" viewBox="0 0 600 600" version="1.1" xmlns="http://www.w3.org/2000/svg" desc="Created with imagetracer.js version 1.2.6" ><path fill="#3b82f6" stroke="#3b82f6" stroke-width="1" opacity="1" d="M 250 266 L 309.5 266 Q 309.3 268.8 312 268.5 L 312 284 L 286.5 284 L 285.5 286 L 222 286 L 222 284 L 218 283.5 L 218 268 L 249.5 268 L 250 266 Z " /></svg>
