@@ -1,4 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <style>
+    .outline { fill: #1a1a1a; stroke: #1a1a1a; stroke-width: 2; }
+    .fill { fill: #ffffff; stroke: none; }
+    .highlight { fill: #4ade80; opacity: 0.5; stroke: none; }
+    .shadow { fill: #d1d5db; opacity: 0.4; stroke: none; }
+    .neck { fill: #9ca3af; stroke: #6b7280; stroke-width: 2; }
+    .rivet { fill: #1a1a1a; stroke: none; }
+    .accent { fill: #ef4444; stroke: none; }
+    .accent-stroke { stroke: #ef4444; fill: none; }
+    .accent2 { fill: #3b82f6; stroke: none; }
+    .accent2-stroke { stroke: #3b82f6; fill: none; }
+    line.outline { fill: none; stroke: #1a1a1a; }
+  </style>
   <g class="body">
     <path class="outline" d="M 90 300 L 90 200 C 90 170, 110 155, 150 150 C 190 155, 210 170, 210 200 L 210 300 Z"/>
    <path class="fill" d="M 98 296 L 98 202 C 98 176, 114 162, 150 158 C 186 162, 202 176, 202 202 L 202 296 Z"/>
