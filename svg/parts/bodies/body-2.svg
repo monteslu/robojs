@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <g class="body">
+    <path class="outline" d="M 90 300 L 90 200 C 90 170, 110 155, 150 150 C 190 155, 210 170, 210 200 L 210 300 Z"/>
+   <path class="fill" d="M 98 296 L 98 202 C 98 176, 114 162, 150 158 C 186 162, 202 176, 202 202 L 202 296 Z"/>
+   <rect class="neck" x="130" y="122" width="40" height="8" rx="3"/>
+   <rect class="neck" x="132" y="132" width="36" height="6" rx="3"/>
+   <rect class="neck" x="134" y="140" width="32" height="6" rx="3"/>
+   <ellipse class="highlight" cx="125" cy="210" rx="10" ry="22"/>
+  </g>
+</svg>
