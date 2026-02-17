@@ -194,8 +194,6 @@ function recolor(content, main, accent) {
   const shadow = `hsl(${main.h}, ${main.s}%, ${Math.max(main.l - 15, 20)}%)`;
   const accentFill = `hsl(${accent.h}, ${accent.s}%, ${accent.l}%)`;
 
-  // Traced SVGs use 5 placeholders mapped by luminance percentile
-  // Hand-drawn use the original 6 placeholders
   const darkAccent = `hsl(${main.h}, ${main.s}%, ${Math.max(main.l - 15, 20)}%)`;
   const midFill = `hsl(${main.h}, ${main.s}%, ${main.l}%)`;
   
@@ -208,6 +206,14 @@ function recolor(content, main, accent) {
     .replaceAll('#d1d5db', shadow);
 }
 
+// Add visible outline stroke to small parts (eyes, mouths)
+function addStroke(content, strokeColor) {
+  // Replace stroke colors with a contrasting outline and increase stroke width
+  return content
+    .replace(/stroke="[^"]*"/g, `stroke="${strokeColor}"`)
+    .replace(/stroke-width="[^"]*"/g, 'stroke-width="3"');
+}
+
 function composeSvg(buckets) {
   const [bodyStyle, headStyle, eyeStyle, mouthStyle, accStyle, bhColor, emColor, accColor] = buckets;
   
@@ -218,10 +224,12 @@ function composeSvg(buckets) {
   // Body and head use main color
   const head = recolor(extractContent(parts.heads[headStyle] || ''), main, emAccent);
   const body = recolor(extractContent(parts.bodies[bodyStyle] || ''), main, emAccent);
-  // Eyes and mouth use emColor as PRIMARY so they stand out against head
-  const eyes = recolor(extractContent(parts.eyes[eyeStyle] || ''), emAccent, main);
-  const mouth = recolor(extractContent(parts.mouths[mouthStyle] || ''), emAccent, main);
-  // Accessories use accColor as primary
+  // Eyes and mouth use emColor — also add contrasting outline stroke
+  const eyeOutline = `hsl(${emAccent.h}, ${Math.max(emAccent.s - 40, 10)}%, ${Math.max(emAccent.l - 30, 8)}%)`;
+  const eyes = addStroke(recolor(extractContent(parts.eyes[eyeStyle] || ''), emAccent, main), eyeOutline);
+  const mouthOutline = `hsl(${emAccent.h}, ${Math.max(emAccent.s - 40, 10)}%, ${Math.max(emAccent.l - 30, 8)}%)`;
+  const mouth = addStroke(recolor(extractContent(parts.mouths[mouthStyle] || ''), emAccent, main), mouthOutline);
+  // Accessories use accColor
   const acc = recolor(extractContent(parts.accessories[accStyle] || ''), accAccent, main);
 
   // Traced SVGs use 600x600 coords, hand-drawn use 300x300
