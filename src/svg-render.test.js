@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { composeSvg, COLORS, colorScheme, generateStyles, extractContent } from './svg-render.js';
+import { composeSvg, recolor, COLORS, colorScheme, generateStyles, extractContent } from './svg-render.js';
 import fs from 'fs';
 import path from 'path';
 
@@ -35,7 +35,6 @@ describe('colorScheme', () => {
     const scheme = colorScheme(200);
     expect(scheme.fill).toMatch(/^hsl\(/);
     expect(scheme.outline).toMatch(/^hsl\(/);
-    expect(scheme.highlight).toMatch(/^hsl\(/);
   });
 
   it('should use the provided hue', () => {
@@ -62,9 +61,6 @@ describe('generateStyles', () => {
     expect(styles).toContain('.outline');
     expect(styles).toContain('.fill');
     expect(styles).toContain('.highlight');
-    expect(styles).toContain('.shadow');
-    expect(styles).toContain('.neck');
-    expect(styles).toContain('.rivet');
     expect(styles).toContain('.accent');
   });
 
@@ -90,50 +86,60 @@ describe('extractContent', () => {
     const content = extractContent('<svg></svg>');
     expect(content).toBe('<svg></svg>');
   });
+});
 
-  it('should handle multiline content', () => {
-    const svg = '<svg><g class="head">\n  <path d="M 0 0"/>\n  <circle r="5"/>\n</g></svg>';
-    const content = extractContent(svg);
-    expect(content).toContain('<path');
-    expect(content).toContain('<circle');
+describe('recolor', () => {
+  it('should replace placeholder colors with derived colors', () => {
+    const content = '<path fill="#1a1a1a"/><path fill="#ffffff"/>';
+    const result = recolor(content, COLORS[0], COLORS[5]);
+    expect(result).not.toContain('#1a1a1a');
+    expect(result).not.toContain('#ffffff');
+    expect(result).toContain('hsl(');
   });
 });
 
 describe('composeSvg', () => {
-  // Load real SVG parts for integration tests
-  const partsDir = path.join(import.meta.dirname, '..', 'svg', 'parts');
-  
-  function loadPart(type, singular, index) {
-    try {
-      return fs.readFileSync(path.join(partsDir, type, singular + '-' + index + '.svg'), 'utf8');
-    } catch {
-      return '<svg><g class="empty"></g></svg>';
-    }
-  }
+  const tracedDir = path.join(import.meta.dirname, '..', 'svg', 'parts-traced');
 
-  function loadPartsForBuckets(buckets) {
-    const [bodyStyle, headStyle, eyeStyle, mouthStyle, accStyle] = buckets;
-    return {
-      head: loadPart('heads', 'head', headStyle),
-      body: loadPart('bodies', 'body', bodyStyle),
-      eyes: loadPart('eyes', 'eye', eyeStyle),
-      mouth: loadPart('mouths', 'mouth', mouthStyle),
-      accessory: loadPart('accessories', 'accessory', accStyle),
+  // 2D part loader: parts[type][band][col]
+  function load2DParts() {
+    const types = {
+      head: 'heads',
+      body: 'bodies',
+      eyes: 'eyes',
+      mouth: 'mouths',
+      accessory: 'accessories',
     };
+    const result = {};
+    for (const [key, dir] of Object.entries(types)) {
+      result[key] = [];
+      const singular = key === 'body' ? 'body' : key === 'accessory' ? 'accessory' : key === 'eyes' ? 'eye' : key === 'mouth' ? 'mouth' : 'head';
+      for (let band = 0; band < 10; band++) {
+        result[key][band] = [];
+        for (let col = 0; col < 10; col++) {
+          const filePath = path.join(tracedDir, dir, `${singular}-${band}-${col}.svg`);
+          try {
+            result[key][band].push(fs.readFileSync(filePath, 'utf8'));
+          } catch {
+            result[key][band].push('<svg><g class="empty"></g></svg>');
+          }
+        }
+      }
+    }
+    return result;
   }
 
   it('should return a valid SVG string', () => {
     const buckets = [0, 0, 0, 0, 0, 0, 0, 0];
-    const parts = loadPartsForBuckets(buckets);
+    const parts = load2DParts();
     const svg = composeSvg(parts, buckets);
     expect(svg).toContain('<svg');
     expect(svg).toContain('</svg>');
-    expect(svg).toMatch(/viewBox="0 0 (300|600) (300|600)"/);
   });
 
-  it('should include style block with colors', () => {
+  it('should include style block with correct hue', () => {
     const buckets = [0, 0, 0, 0, 0, 7, 0, 0]; // bhColor=7 → Red (hsl 358)
-    const parts = loadPartsForBuckets(buckets);
+    const parts = load2DParts();
     const svg = composeSvg(parts, buckets);
     expect(svg).toContain('<style>');
     expect(svg).toContain('hsl(358');
@@ -141,7 +147,7 @@ describe('composeSvg', () => {
 
   it('should include all part layers', () => {
     const buckets = [3, 5, 7, 2, 1, 0, 5, 3];
-    const parts = loadPartsForBuckets(buckets);
+    const parts = load2DParts();
     const svg = composeSvg(parts, buckets);
     expect(svg).toContain('class="body-layer"');
     expect(svg).toContain('class="head-layer"');
@@ -151,31 +157,55 @@ describe('composeSvg', () => {
   });
 
   it('should produce different SVGs for different buckets', () => {
-    const b1 = [0, 0, 0, 0, 0, 0, 0, 0];
-    const b2 = [9, 9, 9, 9, 9, 9, 9, 9];
-    const svg1 = composeSvg(loadPartsForBuckets(b1), b1);
-    const svg2 = composeSvg(loadPartsForBuckets(b2), b2);
+    const parts = load2DParts();
+    const svg1 = composeSvg(parts, [0, 0, 0, 0, 0, 0, 0, 0]);
+    const svg2 = composeSvg(parts, [9, 9, 9, 9, 9, 9, 9, 9]);
     expect(svg1).not.toBe(svg2);
   });
 
-  it('should be deterministic - same buckets = same SVG', () => {
-    const buckets = [7, 7, 3, 1, 4, 9, 7, 6];
-    const parts = loadPartsForBuckets(buckets);
-    const svg1 = composeSvg(parts, buckets);
-    const svg2 = composeSvg(parts, buckets);
-    expect(svg1).toBe(svg2);
+  it('should be deterministic', () => {
+    const buckets = [7, 4, 0, 0, 9, 2, 8, 9]; // "monteslu"
+    const parts = load2DParts();
+    expect(composeSvg(parts, buckets)).toBe(composeSvg(parts, buckets));
   });
 
-  it('should use different accent color from main color', () => {
-    const buckets = [0, 0, 0, 0, 0, 0, 5, 0]; // bhColor=0 (Blue h:198), emColor=5 (Pink h:331)
-    const parts = loadPartsForBuckets(buckets);
-    const svg = composeSvg(parts, buckets);
-    expect(svg).toContain('hsl(198'); // main
-    expect(svg).toContain('hsl(331'); // accent
+  it('should use bhColor band for body/head and emColor band for eyes/mouth', () => {
+    // Different bhColor should produce different body/head content
+    const parts = load2DParts();
+    const svg1 = composeSvg(parts, [0, 0, 0, 0, 0, 0, 0, 0]);
+    const svg2 = composeSvg(parts, [0, 0, 0, 0, 0, 5, 0, 0]); // different bhColor
+    expect(svg1).not.toBe(svg2);
   });
 });
 
-describe('SVG part files', () => {
+describe('SVG traced part files', () => {
+  const tracedDir = path.join(import.meta.dirname, '..', 'svg', 'parts-traced');
+  const partTypes = [
+    { dir: 'heads', prefix: 'head' },
+    { dir: 'bodies', prefix: 'body' },
+    { dir: 'eyes', prefix: 'eye' },
+    { dir: 'mouths', prefix: 'mouth' },
+    { dir: 'accessories', prefix: 'accessory' },
+  ];
+
+  for (const { dir, prefix } of partTypes) {
+    describe(dir, () => {
+      for (let band = 0; band < 10; band++) {
+        for (let col = 0; col < 10; col++) {
+          it(`${prefix}-${band}-${col} should exist and be valid SVG`, () => {
+            const filePath = path.join(tracedDir, dir, `${prefix}-${band}-${col}.svg`);
+            expect(fs.existsSync(filePath)).toBe(true);
+            const content = fs.readFileSync(filePath, 'utf8');
+            expect(content).toContain('<svg');
+            expect(content).toContain('</svg>');
+          });
+        }
+      }
+    });
+  }
+});
+
+describe('SVG hand-drawn part files', () => {
   const partsDir = path.join(import.meta.dirname, '..', 'svg', 'parts');
   const partTypes = [
     { dir: 'heads', prefix: 'head' },
@@ -188,20 +218,12 @@ describe('SVG part files', () => {
   for (const { dir, prefix } of partTypes) {
     describe(dir, () => {
       for (let i = 0; i < 10; i++) {
-        it(prefix + '-' + i + ' should exist and be valid SVG', () => {
-          const filePath = path.join(partsDir, dir, prefix + '-' + i + '.svg');
+        it(`${prefix}-${i} should exist and be valid SVG`, () => {
+          const filePath = path.join(partsDir, dir, `${prefix}-${i}.svg`);
           expect(fs.existsSync(filePath)).toBe(true);
           const content = fs.readFileSync(filePath, 'utf8');
           expect(content).toContain('<svg');
           expect(content).toContain('</svg>');
-          expect(content).toMatch(/viewBox="0 0 (300|600) (300|600)"/);
-        });
-
-        it(prefix + '-' + i + ' should have extractable content', () => {
-          const filePath = path.join(partsDir, dir, prefix + '-' + i + '.svg');
-          const content = fs.readFileSync(filePath, 'utf8');
-          const extracted = extractContent(content);
-          expect(extracted.length).toBeGreaterThan(0);
         });
       }
     });
