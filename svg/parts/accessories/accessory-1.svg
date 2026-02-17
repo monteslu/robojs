@@ -1,1 +1,6 @@
-<svg width="300" height="300" viewBox="0 0 600 600" version="1.1" xmlns="http://www.w3.org/2000/svg" desc="Created with imagetracer.js version 1.2.6" ><path fill="#3b82f6" stroke="#3b82f6" stroke-width="1" opacity="1" d="M 248 156 L 281.5 156 Q 280.9 158.8 284 158 L 284 164 L 282 164.5 L 282 210 Q 278.9 209.3 279.5 212 L 274 212 L 273.5 214 L 266 214 L 265.5 216 L 248.5 216 L 247.5 218 L 234 218 L 234 216 L 230 216 Q 230.8 212.9 228 213.5 L 228 198.5 L 226 197.5 L 226 170 L 228 170 L 228 164 L 230 164 L 232 160 L 238 160 L 238.5 158 L 247.5 158 L 248 156 Z " /></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <g class="accessory">
+    <line fill="none" stroke="#1a1a1a" x1="150" y1="80" x2="150" y2="25" stroke-width="4"/>
+   <circle fill="#ef4444" stroke="none" cx="150" cy="20" r="10"/>
+  </g>
+</svg>
