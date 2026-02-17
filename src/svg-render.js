@@ -22,8 +22,8 @@ function colorScheme(hue) {
     outline: `hsl(${hue}, 15%, 20%)`,
     highlight: `hsl(${hue}, 60%, 70%)`,
     shadow: `hsl(${hue}, 70%, 35%)`,
-    neck: `hsl(0, 0%, 55%)`,
-    neckStroke: `hsl(0, 0%, 35%)`,
+    neck: 'hsl(0, 0%, 55%)',
+    neckStroke: 'hsl(0, 0%, 35%)',
   };
 }
 
@@ -66,7 +66,7 @@ function extractContent(svgString) {
  * @returns {string} Complete SVG string
  */
 export function composeSvg(parts, buckets) {
-  const [bodyStyle, headStyle, eyeStyle, mouthStyle, accStyle, bhColor, emColor, accColor] = buckets;
+  const [,,,, , bhColor, emColor] = buckets;
 
   const mainHue = COLOR_HUES[bhColor] || 120;
   const accentHue = COLOR_HUES[emColor] || 45;
