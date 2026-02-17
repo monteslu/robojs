@@ -219,15 +219,16 @@ function composeSvg(buckets) {
   const emAccent = COLORS[emColor] || COLORS[9];
   const accAccent = COLORS[accColor] || COLORS[8];
 
-  // Shape selected by style index, color applied by recoloring
-  const head = recolor(extractContent(parts.heads[headStyle] || ''), main, emAccent);
-  const body = recolor(extractContent(parts.bodies[bodyStyle] || ''), main, emAccent);
-  
-  // Detail parts (eyes, mouths, acc) use hue rotation to preserve internal detail
-  // Source band is blue (h≈198), so we rotate by (targetHue - 198)
-  const srcHue = 198; // band 0 blue
-  const emRotate = emAccent.h - srcHue;
-  const accRotate = accAccent.h - srcHue;
+  // All parts use hue-rotate to preserve traced detail
+  // Heads/bodies traced from band 2 (green, h≈129)
+  // Eyes/mouths/acc traced from band 0 (blue, h≈198)
+  const bhSrcHue = 129; // green (band 2)
+  const emSrcHue = 198; // blue (band 0)
+  const bhRotate = main.h - bhSrcHue;
+  const emRotate = emAccent.h - emSrcHue;
+  const accRotate = accAccent.h - emSrcHue;
+  const head = extractContent(parts.heads[headStyle] || '');
+  const body = extractContent(parts.bodies[bodyStyle] || '');
   const eyes = extractContent(parts.eyes[eyeStyle] || '');
   const mouth = extractContent(parts.mouths[mouthStyle] || '');
   const acc = extractContent(parts.accessories[accStyle] || '');
@@ -239,12 +240,13 @@ function composeSvg(buckets) {
   
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}">
     <defs>
+      <filter id="bhHue"><feColorMatrix type="hueRotate" values="${bhRotate}"/></filter>
       <filter id="emHue"><feColorMatrix type="hueRotate" values="${emRotate}"/></filter>
       <filter id="accHue"><feColorMatrix type="hueRotate" values="${accRotate}"/></filter>
     </defs>
     <g class="robot">
-      <g ${bodyT ? `transform="${bodyT}"` : ''}>${body}</g>
-      <g ${partT ? `transform="${partT}"` : ''}>${head}</g>
+      <g ${bodyT ? `transform="${bodyT}"` : ''} filter="url(#bhHue)">${body}</g>
+      <g ${partT ? `transform="${partT}"` : ''} filter="url(#bhHue)">${head}</g>
       <g ${partT ? `transform="${partT}"` : ''} filter="url(#emHue)">${mouth}</g>
       <g ${partT ? `transform="${partT}"` : ''} filter="url(#emHue)">${eyes}</g>
       <g ${partT ? `transform="${partT}"` : ''} filter="url(#accHue)">${acc}</g>
