@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <g class="eye">
+    <circle class="accent" cx="150" cy="135" r="25"/>
+   <circle class="fill" cx="150" cy="135" r="18"/>
+   <circle class="accent" cx="150" cy="135" r="12"/>
+   <circle class="outline" cx="150" cy="135" r="6"/>
+   <rect class="outline" x="125" y="130" width="8" height="10" rx="2"/>
+   <rect class="outline" x="167" y="130" width="8" height="10" rx="2"/>
+  </g>
+</svg>
