@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <!-- Head 7: Reuleaux triangle / curved triangle, three rounded sides with subtle corners -->
+  <g class="head">
+    <path class="outline" d="
+      M 150 35
+      C 200 35, 260 80, 250 150
+      C 240 220, 200 265, 150 265
+      C 100 265, 60 220, 50 150
+      C 40 80, 100 35, 150 35
+      Z
+    "/>
+    <path class="fill" d="
+      M 150 44
+      C 196 44, 252 86, 242 150
+      C 232 214, 196 258, 150 258
+      C 104 258, 68 214, 58 150
+      C 48 86, 104 44, 150 44
+      Z
+    "/>
+    <ellipse class="highlight" cx="118" cy="100" rx="14" ry="32" transform="rotate(-15, 118, 100)"/>
+    <circle class="highlight" cx="106" cy="138" r="5"/>
+    <!-- Rivets along one edge -->
+    <circle class="rivet" cx="85" cy="80" r="3"/>
+    <circle class="rivet" cx="100" cy="62" r="3"/>
+    <circle class="rivet" cx="120" cy="48" r="3"/>
+    <circle class="rivet" cx="150" cy="42" r="3"/>
+    <circle class="rivet" cx="180" cy="48" r="3"/>
+    <circle class="rivet" cx="200" cy="62" r="3"/>
+    <circle class="rivet" cx="215" cy="80" r="3"/>
+  </g>
+</svg>
