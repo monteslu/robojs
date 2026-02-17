@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
   <g class="mouth">
-    <line fill="none" stroke="#1a1a1a" stroke-width="2" x1="120" y1="190" x2="180" y2="190" stroke-width="4"/>
+    <line fill="none" stroke="#1a1a1a" x1="120" y1="190" x2="180" y2="190" stroke-width="4"/>
   </g>
 </svg>
