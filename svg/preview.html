@@ -58,10 +58,21 @@
   }
   .part-cell {
     background: #16213e; border-radius: 6px; padding: 8px;
-    text-align: center;
+    text-align: center; position: relative; cursor: pointer;
   }
   .part-cell svg { width: 80px; height: 80px; }
-  .part-cell .idx { font-size: 10px; color: #4b5563; }
+  .part-cell .idx { font-size: 10px; color: #e0e0e0; }
+  .part-cell:hover .tooltip {
+    display: block;
+  }
+  .tooltip {
+    display: none; position: absolute; z-index: 100;
+    bottom: 100%; left: 50%; transform: translateX(-50%);
+    background: #1a1a3e; border: 1px solid #4f46e5; border-radius: 8px;
+    padding: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    pointer-events: none;
+  }
+  .tooltip svg { width: 200px; height: 200px; }
   
   h3 { color: #7ec8e3; margin-top: 30px; }
   
@@ -260,6 +271,11 @@ function renderPartsLibrary() {
           ${content}
         </svg>
         <div class="idx">${singular}-${i}</div>
+        <div class="tooltip">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+            ${content}
+          </svg>
+        </div>
       </div>`;
     }
     html += '</div>';
