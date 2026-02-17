@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
   <g class="accessory">
     <path fill="#ffffff" stroke="none" d="M 135 75 L 165 75 L 150 85 Z"/>
-   <line fill="none" stroke="#1a1a1a" stroke-width="2" x1="150" y1="75" x2="150" y2="25" stroke-width="2"/>
+   <line fill="none" stroke="#1a1a1a" x1="150" y1="75" x2="150" y2="25" stroke-width="2"/>
    <path fill="#ef4444" stroke="none" d="M 152 28 L 175 60 L 152 70 Z"/>
   </g>
 </svg>
