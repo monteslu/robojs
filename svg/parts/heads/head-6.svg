@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <!-- Head 6: Squashed sphere / bulbous blob, wider at top tapering slightly, helmet-like with side panels -->
+  <g class="head">
+    <path class="outline" d="
+      M 150 35
+      C 220 35, 265 90, 260 150
+      C 255 210, 215 255, 150 260
+      C 85 255, 45 210, 40 150
+      C 35 90, 80 35, 150 35
+      Z
+    "/>
+    <path class="fill" d="
+      M 150 44
+      C 214 44, 256 95, 252 150
+      C 248 205, 210 248, 150 252
+      C 90 248, 52 205, 48 150
+      C 44 95, 86 44, 150 44
+      Z
+    "/>
+    <!-- Side panels (darker) -->
+    <path class="shadow" d="
+      M 55 130
+      C 55 100, 70 70, 90 55
+      C 75 80, 60 110, 58 150
+      C 56 175, 65 210, 80 235
+      C 65 220, 50 190, 50 150
+      Z
+    "/>
+    <path class="shadow" d="
+      M 245 130
+      C 245 100, 230 70, 210 55
+      C 225 80, 240 110, 242 150
+      C 244 175, 235 210, 220 235
+      C 235 220, 250 190, 250 150
+      Z
+    "/>
+    <ellipse class="highlight" cx="120" cy="105" rx="15" ry="35" transform="rotate(-12, 120, 105)"/>
+    <circle class="highlight" cx="108" cy="145" r="5"/>
+  </g>
+</svg>
