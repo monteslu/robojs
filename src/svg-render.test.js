@@ -100,29 +100,19 @@ describe('recolor', () => {
 
 describe('composeSvg', () => {
   const tracedDir = path.join(import.meta.dirname, '..', 'svg', 'parts-traced');
+  const prefixes = { head: 'head', body: 'body', eyes: 'eye', mouth: 'mouth', accessory: 'accessory' };
+  const dirs = { head: 'heads', body: 'bodies', eyes: 'eyes', mouth: 'mouths', accessory: 'accessories' };
 
-  // 2D part loader: parts[type][band][col]
-  function load2DParts() {
-    const types = {
-      head: 'heads',
-      body: 'bodies',
-      eyes: 'eyes',
-      mouth: 'mouths',
-      accessory: 'accessories',
-    };
+  function loadParts() {
     const result = {};
-    for (const [key, dir] of Object.entries(types)) {
+    for (const [key, dir] of Object.entries(dirs)) {
       result[key] = [];
-      const singular = key === 'body' ? 'body' : key === 'accessory' ? 'accessory' : key === 'eyes' ? 'eye' : key === 'mouth' ? 'mouth' : 'head';
-      for (let band = 0; band < 10; band++) {
-        result[key][band] = [];
-        for (let col = 0; col < 10; col++) {
-          const filePath = path.join(tracedDir, dir, `${singular}-${band}-${col}.svg`);
-          try {
-            result[key][band].push(fs.readFileSync(filePath, 'utf8'));
-          } catch {
-            result[key][band].push('<svg><g class="empty"></g></svg>');
-          }
+      for (let i = 0; i < 10; i++) {
+        const filePath = path.join(tracedDir, dir, `${prefixes[key]}-${i}.svg`);
+        try {
+          result[key].push(fs.readFileSync(filePath, 'utf8'));
+        } catch {
+          result[key].push('<svg><g class="empty"></g></svg>');
         }
       }
     }
@@ -130,25 +120,22 @@ describe('composeSvg', () => {
   }
 
   it('should return a valid SVG string', () => {
-    const buckets = [0, 0, 0, 0, 0, 0, 0, 0];
-    const parts = load2DParts();
-    const svg = composeSvg(parts, buckets);
+    const parts = loadParts();
+    const svg = composeSvg(parts, [0, 0, 0, 0, 0, 0, 0, 0]);
     expect(svg).toContain('<svg');
     expect(svg).toContain('</svg>');
   });
 
   it('should include style block with correct hue', () => {
-    const buckets = [0, 0, 0, 0, 0, 7, 0, 0]; // bhColor=7 → Red (hsl 358)
-    const parts = load2DParts();
-    const svg = composeSvg(parts, buckets);
+    const parts = loadParts();
+    const svg = composeSvg(parts, [0, 0, 0, 0, 0, 7, 0, 0]);
     expect(svg).toContain('<style>');
     expect(svg).toContain('hsl(358');
   });
 
   it('should include all part layers', () => {
-    const buckets = [3, 5, 7, 2, 1, 0, 5, 3];
-    const parts = load2DParts();
-    const svg = composeSvg(parts, buckets);
+    const parts = loadParts();
+    const svg = composeSvg(parts, [3, 5, 7, 2, 1, 0, 5, 3]);
     expect(svg).toContain('class="body-layer"');
     expect(svg).toContain('class="head-layer"');
     expect(svg).toContain('class="mouth-layer"');
@@ -157,24 +144,23 @@ describe('composeSvg', () => {
   });
 
   it('should produce different SVGs for different buckets', () => {
-    const parts = load2DParts();
+    const parts = loadParts();
     const svg1 = composeSvg(parts, [0, 0, 0, 0, 0, 0, 0, 0]);
     const svg2 = composeSvg(parts, [9, 9, 9, 9, 9, 9, 9, 9]);
     expect(svg1).not.toBe(svg2);
   });
 
   it('should be deterministic', () => {
-    const buckets = [7, 4, 0, 0, 9, 2, 8, 9]; // "monteslu"
-    const parts = load2DParts();
+    const parts = loadParts();
+    const buckets = [7, 4, 0, 0, 9, 2, 8, 9];
     expect(composeSvg(parts, buckets)).toBe(composeSvg(parts, buckets));
   });
 
-  it('should use bhColor band for body/head and emColor band for eyes/mouth', () => {
-    // Different bhColor should produce different body/head content
-    const parts = load2DParts();
-    const svg1 = composeSvg(parts, [0, 0, 0, 0, 0, 0, 0, 0]);
-    const svg2 = composeSvg(parts, [0, 0, 0, 0, 0, 5, 0, 0]); // different bhColor
-    expect(svg1).not.toBe(svg2);
+  it('should use different accent color from main color', () => {
+    const parts = loadParts();
+    const svg = composeSvg(parts, [0, 0, 0, 0, 0, 0, 5, 0]);
+    expect(svg).toContain('hsl(198'); // main (blue)
+    expect(svg).toContain('hsl(331'); // accent (pink)
   });
 });
 
@@ -190,16 +176,14 @@ describe('SVG traced part files', () => {
 
   for (const { dir, prefix } of partTypes) {
     describe(dir, () => {
-      for (let band = 0; band < 10; band++) {
-        for (let col = 0; col < 10; col++) {
-          it(`${prefix}-${band}-${col} should exist and be valid SVG`, () => {
-            const filePath = path.join(tracedDir, dir, `${prefix}-${band}-${col}.svg`);
-            expect(fs.existsSync(filePath)).toBe(true);
-            const content = fs.readFileSync(filePath, 'utf8');
-            expect(content).toContain('<svg');
-            expect(content).toContain('</svg>');
-          });
-        }
+      for (let i = 0; i < 10; i++) {
+        it(`${prefix}-${i} should exist and be valid SVG`, () => {
+          const filePath = path.join(tracedDir, dir, `${prefix}-${i}.svg`);
+          expect(fs.existsSync(filePath)).toBe(true);
+          const content = fs.readFileSync(filePath, 'utf8');
+          expect(content).toContain('<svg');
+          expect(content).toContain('</svg>');
+        });
       }
     });
   }
