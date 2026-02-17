@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>RoboJS SVG Preview</title>
+<style>
+  * { box-sizing: border-box; }
+  body { 
+    background: #0f0f23; color: #e0e0e0; 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    padding: 20px; margin: 0;
+  }
+  h1 { color: #7ec8e3; margin-bottom: 5px; }
+  h2 { color: #9ca3af; font-size: 14px; font-weight: normal; margin-top: 0; }
+  
+  .controls { 
+    display: flex; gap: 16px; align-items: center; 
+    margin: 20px 0; flex-wrap: wrap;
+    background: #1a1a3e; padding: 16px; border-radius: 8px;
+  }
+  .controls label { font-size: 13px; color: #9ca3af; }
+  .controls input[type="text"] { 
+    padding: 8px 12px; border-radius: 6px; border: 1px solid #333;
+    background: #16213e; color: #e0e0e0; font-size: 16px; width: 300px;
+  }
+  .controls button {
+    padding: 8px 16px; border-radius: 6px; border: none;
+    background: #4f46e5; color: white; cursor: pointer; font-size: 14px;
+  }
+  .controls button:hover { background: #6366f1; }
+  
+  .robot-display {
+    display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap;
+    margin: 20px 0;
+  }
+  .robot-card {
+    background: #1a1a3e; border-radius: 12px; padding: 16px;
+    text-align: center; min-width: 200px;
+  }
+  .robot-card svg { width: 200px; height: 200px; }
+  .robot-card .label { font-size: 12px; color: #6b7280; margin-top: 8px; }
+  .robot-card .hash { font-family: monospace; font-size: 10px; color: #4b5563; word-break: break-all; }
+  
+  .gallery {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px; margin: 20px 0;
+  }
+  .gallery-item {
+    background: #1a1a3e; border-radius: 8px; padding: 12px;
+    text-align: center;
+  }
+  .gallery-item svg { width: 140px; height: 140px; }
+  .gallery-item .name { font-size: 11px; color: #6b7280; margin-top: 4px; }
+  
+  .parts-grid {
+    display: grid; grid-template-columns: repeat(10, 1fr);
+    gap: 8px; margin: 16px 0;
+  }
+  .part-cell {
+    background: #16213e; border-radius: 6px; padding: 8px;
+    text-align: center;
+  }
+  .part-cell svg { width: 80px; height: 80px; }
+  .part-cell .idx { font-size: 10px; color: #4b5563; }
+  
+  h3 { color: #7ec8e3; margin-top: 30px; }
+  
+  .color-strip {
+    display: flex; gap: 4px; margin: 8px 0;
+  }
+  .color-swatch {
+    width: 30px; height: 30px; border-radius: 4px; cursor: pointer;
+    border: 2px solid transparent;
+  }
+  .color-swatch:hover { border-color: white; }
+</style>
+</head>
+<body>
+
+<h1>🤖 RoboJS SVG Preview</h1>
+<h2>Deterministic robot avatars — 2^128 unique combinations</h2>
+
+<div class="controls">
+  <div>
+    <label>Type anything:</label><br>
+    <input type="text" id="hashInput" placeholder="email, username, whatever..." value="monteslu">
+  </div>
+  <button onclick="renderFromInput()">Generate</button>
+  <button onclick="renderRandom()">🎲 Random</button>
+</div>
+
+<div class="robot-display" id="mainDisplay"></div>
+
+<h3>Gallery — Team Robots</h3>
+<div class="gallery" id="gallery"></div>
+
+<h3>Color Palette (10 hues from sprite sheet)</h3>
+<div class="color-strip" id="colorStrip"></div>
+
+<h3>Parts Library</h3>
+<div id="partsLibrary"></div>
+
+<script type="module">
+import md5 from 'https://esm.sh/blueimp-md5@2.19.0';
+
+const COLOR_HUES = [200, 180, 270, 0, 190, 30, 45, 120, 220, 25];
+const PART_TYPES = ['heads', 'bodies', 'eyes', 'mouths', 'accessories'];
+const PART_SINGULAR = { heads: 'head', bodies: 'body', eyes: 'eye', mouths: 'mouth', accessories: 'accessory' };
+
+// Load all SVG parts
+const parts = {};
+async function loadParts() {
+  for (const type of PART_TYPES) {
+    parts[type] = [];
+    const singular = PART_SINGULAR[type];
+    for (let i = 0; i < 10; i++) {
+      try {
+        const resp = await fetch(`parts/${type}/${singular}-${i}.svg`);
+        const text = await resp.text();
+        parts[type].push(text);
+      } catch(e) {
+        parts[type].push('<svg></svg>');
+      }
+    }
+  }
+}
+
+function hexToBytes(hex) {
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < hex.length; i += 2) {
+    bytes[i / 2] = parseInt(hex.substring(i, i + 2), 16);
+  }
+  return bytes;
+}
+
+function getBuckets(hash) {
+  const cleanHash = hash.replace(/-/g, '');
+  const bytes = hexToBytes(cleanHash);
+  const buckets = [];
+  for (let i = 0; i < bytes.length; i += 2) {
+    const value = (bytes[i] << 8) + bytes[i + 1];
+    buckets.push(value % 10);
+  }
+  return buckets;
+}
+
+function extractContent(svgString) {
+  const match = svgString.match(/<g[^>]*>([\s\S]*?)<\/g>/);
+  return match ? match[1] : '';
+}
+
+function composeSvg(buckets) {
+  const [bodyStyle, headStyle, eyeStyle, mouthStyle, accStyle, bhColor, emColor, accColor] = buckets;
+  
+  const mainHue = COLOR_HUES[bhColor] || 120;
+  const accentHue = COLOR_HUES[emColor] || 45;
+
+  const head = extractContent(parts.heads[headStyle] || '');
+  const body = extractContent(parts.bodies[bodyStyle] || '');
+  const eyes = extractContent(parts.eyes[eyeStyle] || '');
+  const mouth = extractContent(parts.mouths[mouthStyle] || '');
+  const acc = extractContent(parts.accessories[accStyle] || '');
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+    <style>
+      .outline { fill: hsl(${mainHue}, 15%, 20%); stroke: hsl(${mainHue}, 15%, 20%); stroke-width: 2; }
+      .fill { fill: hsl(${mainHue}, 70%, 50%); stroke: none; }
+      .highlight { fill: hsl(${mainHue}, 60%, 70%); opacity: 0.5; stroke: none; }
+      .shadow { fill: hsl(${mainHue}, 70%, 35%); opacity: 0.4; stroke: none; }
+      .neck { fill: hsl(0, 0%, 55%); stroke: hsl(0, 0%, 35%); stroke-width: 2; }
+      .rivet { fill: hsl(${mainHue}, 15%, 20%); stroke: none; }
+      .accent { fill: hsl(${accentHue}, 85%, 60%); stroke: none; }
+      .accent-stroke { stroke: hsl(${accentHue}, 85%, 60%); fill: none; }
+      line.outline { fill: none; }
+    </style>
+    <g class="robot">
+      <g transform="translate(15, 80) scale(0.9)">${body}</g>
+      <g transform="translate(22, -10) scale(0.85)">${head}</g>
+      <g transform="translate(22, -10) scale(0.85)">${mouth}</g>
+      <g transform="translate(22, -10) scale(0.85)">${eyes}</g>
+      <g transform="translate(22, -10) scale(0.85)">${acc}</g>
+    </g>
+  </svg>`;
+}
+
+function renderRobot(input) {
+  const hash = md5(input);
+  const buckets = getBuckets(hash);
+  return { svg: composeSvg(buckets), hash, buckets };
+}
+
+// UI functions
+window.renderFromInput = function() {
+  const input = document.getElementById('hashInput').value;
+  const { svg, hash, buckets } = renderRobot(input);
+  document.getElementById('mainDisplay').innerHTML = `
+    <div class="robot-card">
+      ${svg}
+      <div class="label">"${input}"</div>
+      <div class="hash">${hash}</div>
+      <div class="label">buckets: [${buckets.join(', ')}]</div>
+    </div>
+  `;
+};
+
+window.renderRandom = function() {
+  const rand = Math.random().toString(36).substring(2, 10);
+  document.getElementById('hashInput').value = rand;
+  window.renderFromInput();
+};
+
+// Gallery
+function renderGallery() {
+  const names = ['monteslu', 'radagast', 'pippin', 'gimli', 'luthien', 'gandalf', 'frodo', 'aragorn', 'legolas', 'sauron', 'openclaw', 'agentgate'];
+  const gallery = document.getElementById('gallery');
+  gallery.innerHTML = names.map(name => {
+    const { svg } = renderRobot(name);
+    return `<div class="gallery-item">${svg}<div class="name">${name}</div></div>`;
+  }).join('');
+}
+
+// Color strip
+function renderColorStrip() {
+  const strip = document.getElementById('colorStrip');
+  strip.innerHTML = COLOR_HUES.map((hue, i) => 
+    `<div class="color-swatch" style="background: hsl(${hue}, 70%, 50%)" title="Index ${i}: hue ${hue}°"></div>`
+  ).join('');
+}
+
+// Parts library
+function renderPartsLibrary() {
+  const container = document.getElementById('partsLibrary');
+  const mainHue = 200;
+  const accentHue = 45;
+  
+  for (const type of PART_TYPES) {
+    const singular = PART_SINGULAR[type];
+    let html = `<h4 style="color:#9ca3af;text-transform:capitalize">${type}</h4><div class="parts-grid">`;
+    for (let i = 0; i < 10; i++) {
+      const content = extractContent(parts[type][i] || '');
+      html += `<div class="part-cell">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+          <style>
+            .outline{fill:hsl(${mainHue},15%,20%);stroke:hsl(${mainHue},15%,20%);stroke-width:2}
+            .fill{fill:hsl(${mainHue},70%,50%);stroke:none}
+            .highlight{fill:hsl(${mainHue},60%,70%);opacity:0.5;stroke:none}
+            .shadow{fill:hsl(${mainHue},70%,35%);opacity:0.4;stroke:none}
+            .neck{fill:hsl(0,0%,55%);stroke:hsl(0,0%,35%);stroke-width:2}
+            .rivet{fill:hsl(${mainHue},15%,20%);stroke:none}
+            .accent{fill:hsl(${accentHue},85%,60%);stroke:none}
+            .accent-stroke{stroke:hsl(${accentHue},85%,60%);fill:none}
+            line.outline{fill:none}
+          </style>
+          ${content}
+        </svg>
+        <div class="idx">${singular}-${i}</div>
+      </div>`;
+    }
+    html += '</div>';
+    container.innerHTML += html;
+  }
+}
+
+// Init
+await loadParts();
+window.renderFromInput();
+renderGallery();
+renderColorStrip();
+renderPartsLibrary();
+</script>
+</body>
+</html>
