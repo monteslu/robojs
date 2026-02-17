@@ -102,7 +102,19 @@
 <script type="module">
 import md5 from 'https://esm.sh/blueimp-md5@2.19.0';
 
-const COLOR_HUES = [200, 180, 270, 0, 190, 30, 45, 120, 220, 25];
+// Actual sprite sheet colors sampled from set1.png
+const COLORS = [
+  { h: 198, s: 75, l: 51 },  // 0: Blue
+  { h: 26,  s: 40, l: 39 },  // 1: Brown
+  { h: 129, s: 53, l: 46 },  // 2: Green
+  { h: 216, s: 3,  l: 66 },  // 3: Gray
+  { h: 32,  s: 92, l: 54 },  // 4: Orange
+  { h: 331, s: 100,l: 64 },  // 5: Pink
+  { h: 301, s: 57, l: 36 },  // 6: Purple
+  { h: 358, s: 85, l: 52 },  // 7: Red
+  { h: 240, s: 4,  l: 95 },  // 8: Near-white
+  { h: 56,  s: 94, l: 58 },  // 9: Yellow
+];
 const PART_TYPES = ['heads', 'bodies', 'eyes', 'mouths', 'accessories'];
 const PART_SINGULAR = { heads: 'head', bodies: 'body', eyes: 'eye', mouths: 'mouth', accessories: 'accessory' };
 
@@ -149,33 +161,33 @@ function extractContent(svgString) {
 }
 
 // Replace placeholder colors in SVG content with hash-derived colors
-function recolor(content, mainHue, accentHue) {
-  const outline = `hsl(${mainHue}, 15%, 20%)`;
-  const fill = `hsl(${mainHue}, 70%, 50%)`;
-  const highlight = `hsl(${mainHue}, 60%, 70%)`;
-  const shadow = `hsl(${mainHue}, 70%, 35%)`;
-  const accent = `hsl(${accentHue}, 85%, 60%)`;
+function recolor(content, main, accent) {
+  const outline = `hsl(${main.h}, ${Math.max(main.s - 40, 10)}%, ${Math.max(main.l - 30, 12)}%)`;
+  const fill = `hsl(${main.h}, ${main.s}%, ${main.l}%)`;
+  const highlight = `hsl(${main.h}, ${Math.max(main.s - 15, 10)}%, ${Math.min(main.l + 20, 85)}%)`;
+  const shadow = `hsl(${main.h}, ${main.s}%, ${Math.max(main.l - 15, 20)}%)`;
+  const accentFill = `hsl(${accent.h}, ${accent.s}%, ${accent.l}%)`;
 
   return content
-    .replaceAll('#1a1a1a', outline)   // outline
-    .replaceAll('#ffffff', fill)       // fill
-    .replaceAll('#4ade80', highlight)  // highlight
-    .replaceAll('#d1d5db', shadow)     // shadow
-    .replaceAll('#ef4444', accent)     // accent
-    .replaceAll('#3b82f6', accent);    // accent2 (use accent for now)
+    .replaceAll('#1a1a1a', outline)
+    .replaceAll('#ffffff', fill)
+    .replaceAll('#4ade80', highlight)
+    .replaceAll('#d1d5db', shadow)
+    .replaceAll('#ef4444', accentFill)
+    .replaceAll('#3b82f6', accentFill);
 }
 
 function composeSvg(buckets) {
   const [bodyStyle, headStyle, eyeStyle, mouthStyle, accStyle, bhColor, emColor, accColor] = buckets;
   
-  const mainHue = COLOR_HUES[bhColor] || 120;
-  const accentHue = COLOR_HUES[emColor] || 45;
+  const main = COLORS[bhColor] || COLORS[0];
+  const accent = COLORS[emColor] || COLORS[9];
 
-  const head = recolor(extractContent(parts.heads[headStyle] || ''), mainHue, accentHue);
-  const body = recolor(extractContent(parts.bodies[bodyStyle] || ''), mainHue, accentHue);
-  const eyes = recolor(extractContent(parts.eyes[eyeStyle] || ''), mainHue, accentHue);
-  const mouth = recolor(extractContent(parts.mouths[mouthStyle] || ''), mainHue, accentHue);
-  const acc = recolor(extractContent(parts.accessories[accStyle] || ''), mainHue, accentHue);
+  const head = recolor(extractContent(parts.heads[headStyle] || ''), main, accent);
+  const body = recolor(extractContent(parts.bodies[bodyStyle] || ''), main, accent);
+  const eyes = recolor(extractContent(parts.eyes[eyeStyle] || ''), main, accent);
+  const mouth = recolor(extractContent(parts.mouths[mouthStyle] || ''), main, accent);
+  const acc = recolor(extractContent(parts.accessories[accStyle] || ''), main, accent);
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
     <g class="robot">
@@ -227,8 +239,8 @@ function renderGallery() {
 // Color strip
 function renderColorStrip() {
   const strip = document.getElementById('colorStrip');
-  strip.innerHTML = COLOR_HUES.map((hue, i) => 
-    `<div class="color-swatch" style="background: hsl(${hue}, 70%, 50%)" title="Index ${i}: hue ${hue}°"></div>`
+  strip.innerHTML = COLORS.map((c, i) => 
+    `<div class="color-swatch" style="background: hsl(${c.h}, ${c.s}%, ${c.l}%)" title="Index ${i}: hsl(${c.h}, ${c.s}%, ${c.l}%)"></div>`
   ).join('');
 }
 
